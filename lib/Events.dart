@@ -15,6 +15,8 @@ class Events extends StatefulWidget {
 class _EventsState extends State<Events> {
   TextEditingController editingController = TextEditingController();
 
+  String searchValue = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,15 +55,19 @@ class _EventsState extends State<Events> {
               )),
         ]),
         body: Container(
-            child: Column(children: [
+            child: ListView(children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                searchValue = value;
+
+                setState(() {});
+              },
               controller: editingController,
               decoration: InputDecoration(
                   labelText: "Search",
-                  hintText: "Search",
+                  hintText: "",
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25.0)))),
@@ -73,18 +79,26 @@ class _EventsState extends State<Events> {
               future: loadEvents(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) print(snapshot.error);
-                return snapshot.hasData
-                    ? ListView.builder(
-                        itemCount: snapshot.data.events.length,
-                        padding: const EdgeInsets.all(8),
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            height: 100,
-                            child:
-                                buildCard(context, snapshot.data.events[index]),
-                          );
-                        })
-                    : Center(child: CircularProgressIndicator());
+
+                if (snapshot.hasData) {
+                  if (snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  var list = snapshot.data.events
+                      .where((element) => element.titre.contains(searchValue))
+                      .toList();
+                  return ListView.builder(
+                      itemCount: list.length,
+                      padding: const EdgeInsets.all(8),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          height: 100,
+                          child: buildCard(context, list.elementAt(index)),
+                        );
+                      });
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
               },
             ),
           )

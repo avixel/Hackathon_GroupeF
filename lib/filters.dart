@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon_groupe_f/Events.dart';
 
 class Filters extends StatefulWidget {
   Filters({Key key}) : super(key: key);
@@ -16,7 +17,7 @@ class _FiltersState extends State<Filters> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Flutter tutorial"),
+          title: Text("Filter"),
         ),
         body: Column(children: [
           Row(children: [
@@ -93,7 +94,17 @@ class _FiltersState extends State<Filters> {
                     });
                   }),
             )
-          ])
+          ]),
+          TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Events(),
+                  ),
+                );
+              })
         ]));
   }
 }
