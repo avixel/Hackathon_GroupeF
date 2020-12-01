@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'jsonHandler.dart';
 import 'EventPage.dart';
+import 'Map.dart';
 
 class Events extends StatefulWidget {
   Events({Key key, this.title}) : super(key: key);
@@ -18,6 +19,25 @@ class _EventsState extends State<Events> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Events"),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Map(),
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    Icons.map,
+                    size: 26.0,
+                  ),
+                )
+            ),
+          ]
         ),
         body: Container(
             child: Column(children: [
