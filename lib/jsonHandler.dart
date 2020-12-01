@@ -36,13 +36,34 @@ class Event {
   final String description;
   final String image;
 
-  Event({this.titre, this.description, this.image});
+  final String typeDAnimation;
+  final String horaireDetaile;
+  final String horaire;
+  final String nomDuLieu;
+  final String ville;
+  final String descriptionLongue;
+  final String nombreEvenements;
+
+  final List geolocalisation;
+
+
+  Event({this.titre, this.description, this.image, this.typeDAnimation, this.horaireDetaile,this.nomDuLieu, this.ville,
+    this.descriptionLongue, this.horaire, this .nombreEvenements, this.geolocalisation});
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return new Event(
       titre: json['fields']['titre_fr'].toString(),
       description: json['fields']['description_fr'].toString(),
       image: json['fields']['image'].toString(),
+      typeDAnimation: json['fields']['type_d_animation'].toString(),
+      horaireDetaile: json['fields']['horaires_detailles_fr'].toString(),
+      horaire: json['fields']['resume_horaires_fr'].toString(),
+      nomDuLieu: json['fields']['nom_du_lieu'].toString(),
+      ville: json['fields']['ville'].toString(),
+      descriptionLongue: json['fields']['description_longue_fr'].toString(),
+      nombreEvenements: json['fields']['nb_evenements'].toString(),
+      geolocalisation: json['fields']['geolocalisation'],
+
     );
   }
 }
