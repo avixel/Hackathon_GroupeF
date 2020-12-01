@@ -40,15 +40,15 @@ class _EventsState extends State<Events> {
               future: loadEvents(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) print(snapshot.error);
-                var list = snapshot.data.events;
                 return snapshot.hasData
                     ? ListView.builder(
-                        itemCount: list.length,
+                        itemCount: snapshot.data.events.length,
                         padding: const EdgeInsets.all(8),
                         itemBuilder: (BuildContext context, int index) {
                           return Container(
                             height: 100,
-                            child: buildCard(context, list[index]),
+                            child:
+                                buildCard(context, snapshot.data.events[index]),
                           );
                         })
                     : Center(child: CircularProgressIndicator());
@@ -69,7 +69,9 @@ Card buildCard(context, Event event) {
           maxWidth: 64,
           maxHeight: 64,
         ),
-        child: Image.network(event.image, fit: BoxFit.cover),
+        child: event.image != null
+            ? Image.network(event.image, fit: BoxFit.cover)
+            : Text("" ),
       ),
       title: event.titre != null
           ? Row(children: [
