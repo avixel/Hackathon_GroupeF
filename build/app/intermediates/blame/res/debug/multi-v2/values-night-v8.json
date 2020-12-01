@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/dorian/Documents/Cours/MMM/Hackathon_GroupeF/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
+            "outputFile": "/home/allan/AndroidStudioProjects/Hackathon_GroupeF/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "/home/dorian/Documents/Cours/MMM/Hackathon_GroupeF/android/app/src/main/res/values-night/styles.xml",
+                    "source": "/home/allan/AndroidStudioProjects/Hackathon_GroupeF/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
