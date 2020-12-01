@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'filters.dart';
 import 'jsonHandler.dart';
 import 'EventPage.dart';
 import 'Map.dart';
@@ -17,28 +18,40 @@ class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Events"),
-          actions: <Widget>[
-            Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Map(),
-                      ),
-                    );
-                  },
-                  child: Icon(
-                    Icons.map,
-                    size: 26.0,
-                  ),
-                )
-            ),
-          ]
-        ),
+        appBar: AppBar(title: Text("Events"), actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Map(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.map,
+                  size: 26.0,
+                ),
+              )),
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Filters(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.search,
+                  size: 26.0,
+                ),
+              )),
+        ]),
         body: Container(
             child: Column(children: [
           Padding(
@@ -91,7 +104,7 @@ Card buildCard(context, Event event) {
         ),
         child: event.image != null
             ? Image.network(event.image, fit: BoxFit.cover)
-            : Text("" ),
+            : Text(""),
       ),
       title: event.titre != null
           ? Row(children: [
