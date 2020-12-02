@@ -52,6 +52,7 @@ class Event {
   final String ville;
   final String descriptionLongue;
   final String nombreEvenements;
+  final List<String> LienDInscription;
 
   final List geolocalisation;
 
@@ -66,7 +67,9 @@ class Event {
       this.descriptionLongue,
       this.horaire,
       this.nombreEvenements,
-      this.geolocalisation});
+      this.geolocalisation,
+      this.LienDInscription,
+      });
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return new Event(
@@ -81,6 +84,7 @@ class Event {
       descriptionLongue: json['fields']['description_longue_fr'].toString(),
       nombreEvenements: json['fields']['nb_evenements'].toString(),
       geolocalisation: json['fields']['geolocalisation'],
+      LienDInscription: json['fields']['lien_d_inscription'].toString().split(','),
     );
   }
 }
