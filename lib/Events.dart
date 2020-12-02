@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon_groupe_f/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Parcours.dart';
+import 'Service.dart';
 import 'jsonHandler.dart';
 import 'EventPage.dart';
 import 'Map.dart';
@@ -61,13 +64,71 @@ class _EventsState extends State<Events> {
                   size: 26.0,
                 ),
               )),
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.remove('email');
+                  auth.signOut();
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext ctx) => LoginScreen()));
+                },
+                child: Icon(
+                  Icons.logout,
+                  size: 26.0,
+                ),
+              )),
         ]),
         body: ListView(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             children: [
-              if (showSearch || true)
+              if (!showSearch)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onSubmitted: (String value) {
+                      showSearch = true;
+                      if (showWhat) {
+                        searchValueWhat = editingController.text;
+                      }
+                      if (showWhen) {
+                        searchValueWhen = editingController.text;
+                      }
+                      if (showWhere) {
+                        searchValueWhere = editingController.text;
+                      }
+                      setState(() {});
+                    },
+                    onChanged: (value) {
+                      if (showWhat) {
+                        searchValueWhat = editingController.text;
+                      }
+                      if (showWhen) {
+                        searchValueWhen = editingController.text;
+                      }
+                      if (showWhere) {
+                        searchValueWhere = editingController.text;
+                      }
+                      setState(() {});
+                    },
+                    controller: editingController,
+                    decoration: InputDecoration(
+                        labelText: "Search",
+                        hintText: "Search",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25.0)))),
+                  ),
+                ),
+              if (showSearch)
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
                         margin: const EdgeInsets.all(5.0),
@@ -122,7 +183,7 @@ class _EventsState extends State<Events> {
                       shrinkWrap: true,
                       children: [
                     Container(
-                      height: 500.0,
+                      height: 600.0,
                       child: FutureBuilder<EventsList>(
                         future: loadEvents(),
                         builder: (context, snapshot) {
@@ -134,14 +195,17 @@ class _EventsState extends State<Events> {
                             }
                             var list = snapshot.data.events
                                 .where((element) =>
-                                    element.titre.contains(searchValueWhat))
+                                    element.titre.contains(searchValueWhat) &&
+                                    element.horaire.contains(searchValueWhen) &&
+                                    element.nomDuLieu
+                                        .contains(searchValueWhere))
                                 .toList();
                             return ListView.builder(
                                 itemCount: list.length,
                                 padding: const EdgeInsets.all(8),
                                 itemBuilder: (BuildContext context, int index) {
                                   return Container(
-                                    height: 100,
+                                    height: 80,
                                     child: buildCard(
                                         context, list.elementAt(index)),
                                   );

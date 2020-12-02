@@ -402,8 +402,8 @@ class _EventPageState extends State<Eventpage> {
                             starCount: 5,
                             allowHalfRating: true,
                             spacing: 2.0,
-                            onRated: (value) {
-                              addRating(auth.currentUser.email, value,
+                            onRated: (value) async {
+                              await addRating(auth.currentUser.email, value,
                                   widget.event.titre);
                               setState(() {});
                             },

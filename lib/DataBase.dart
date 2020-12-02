@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'Parcours.dart';
+
 final FirebaseFirestore db = FirebaseFirestore.instance;
 
 final CollectionReference ratings = db.collection('Ratings');
 final CollectionReference orgas = db.collection('OrganisateurEvent');
 final CollectionReference remplissage = db.collection('Remplissage');
+final CollectionReference parcours = db.collection('Parcours');
 
 Stream<QuerySnapshot> getRatings() {
   return ratings.snapshots();
@@ -23,10 +26,10 @@ Future<double> getRating(user, event) async {
   return res;
 }
 
-Future<void> addRating(user, score, event) {
+Future<void> addRating(user, score, event) async {
   var usersRef = ratings.doc(user + "-" + event.substring(0,10));
 
-  usersRef.get().then((docSnapshot) {
+  await usersRef.get().then((docSnapshot) {
     if (docSnapshot.exists) {
       usersRef.update({'score': score});
     } else {
@@ -90,6 +93,36 @@ Future<bool> addRemplissage(remp, event) async {
           .set({'remplissage': remp})
           .then((value) => print("remplissage uploaded"))
           .catchError((error) => print("Error while uploading " + error));
+    }
+  });
+  return true;
+}
+
+
+Future<double> getParcours(String user) async {
+  var temp = parcours.doc(user);
+
+  double res = 0;
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      res = double.parse(docSnapshot.get("remplissage"));
+    }
+  });
+  return res;
+}
+
+Future<bool> addParcours(user,Parcours parc) async {
+  var temp = parcours.doc(user+"-"+parc.name);
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      return temp.update({'parcours': parc.toJson()});
+    } else {
+      return temp
+          .set({'parcours': parc.toJson()})
+          .then((value) => print("parcours uploaded"))
+          .catchError((error) => print("Error while uploading " + error.toString()));
     }
   });
   return true;

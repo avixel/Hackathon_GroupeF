@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon_groupe_f/DataBase.dart';
 
+import 'Service.dart';
 import 'jsonHandler.dart';
 
 class ParcoursPage extends StatefulWidget {
@@ -99,4 +101,9 @@ class Parcours {
   List<Event> events;
 
   Parcours(this.name, this.events);
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'events': events,
+      };
 }
