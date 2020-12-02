@@ -11,7 +11,7 @@ Stream<QuerySnapshot> getRatings() {
 }
 
 Future<double> getRating(user, event) async {
-  var usersRef = ratings.doc(user + "-" + event);
+  var usersRef = ratings.doc(user + "-" + event.substring(0,10));
 
   double res = 0;
 
@@ -24,14 +24,14 @@ Future<double> getRating(user, event) async {
 }
 
 Future<void> addRating(user, score, event) {
-  var usersRef = ratings.doc(user + "-" + event);
+  var usersRef = ratings.doc(user + "-" + event.substring(0,10));
 
   usersRef.get().then((docSnapshot) {
     if (docSnapshot.exists) {
       usersRef.update({'score': score});
     } else {
       return usersRef
-          .set({'user': user, 'score': score, "event": event})
+          .set({'user': user, 'score': score, "event": event.substring(0,10)})
           .then((value) => print("rating uploaded"))
           .catchError((error) => print("Error while uploading " + error));
     }
@@ -42,7 +42,7 @@ Future<double> getAverageScore(event) async {
   double total = 0;
   double count = 0;
   await ratings.get().then((value) => value.docs.forEach((element) {
-        if (element.data()["event"] == event) {
+        if (element.data()["event"] == event.substring(0,10)) {
           total += element.data()["score"];
           count = count + 1;
         }
@@ -54,7 +54,7 @@ Future<double> getAverageScore(event) async {
 }
 
 Future<bool> orgaMDP(event, mdp) async {
-  var temp = orgas.doc(event);
+  var temp = orgas.doc(event.substring(0,10));
 
   bool res = false;
 
@@ -66,8 +66,8 @@ Future<bool> orgaMDP(event, mdp) async {
   return res;
 }
 
-Future<double> getRemplissage(event) async {
-  var temp = remplissage.doc(event);
+Future<double> getRemplissage(String event) async {
+  var temp = remplissage.doc(event.substring(0,10));
 
   double res = 0;
 
@@ -80,7 +80,7 @@ Future<double> getRemplissage(event) async {
 }
 
 Future<bool> addRemplissage(remp, event) async {
-  var temp = remplissage.doc(event);
+  var temp = remplissage.doc(event.substring(0,10));
 
   await temp.get().then((docSnapshot) {
     if (docSnapshot.exists) {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon_groupe_f/DataBase.dart';
+import 'Parcours.dart';
 import 'Service.dart';
 import 'constants.dart';
 import 'jsonHandler.dart';
@@ -22,9 +23,24 @@ class _EventPageState extends State<Eventpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.event.titre),
-      ),
+      appBar: AppBar(title: Text(widget.event.titre), actions: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ParcoursPage(event : widget.event),
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.add_location_sharp,
+                size: 26.0,
+              ),
+            )),
+      ]),
       body: ListView(
         children: [
           Row(
@@ -122,112 +138,244 @@ class _EventPageState extends State<Eventpage> {
                   ],
                 )
               : SizedBox.shrink(),
-          widget.event.LienDInscription != null ? Container(
-            child: widget.event.LienDInscription.first != 'null' ? Container(
-              child: Column(
-                children: [
-                  Text('Inscription',style: TextStyle(fontWeight: FontWeight.bold),),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        //telephone/email/website
-                        if (widget.event.LienDInscription.first.contains(RegExp(r'[0-9]')))
-                          RaisedButton(
-                            onPressed: () async {
-                              String tel = 'tel:'+widget.event.LienDInscription.first;
-                              if (await canLaunch(tel)) {await launch(tel);} else {throw 'Could not call $tel';}
-                            },
-                            child: Icon(Icons.call),
-                          )
-                        else  if(widget.event.LienDInscription.first.contains('@'))
-                          RaisedButton(
-                            onPressed: () async {
-                              String email = 'mailto:'+widget.event.LienDInscription.first+'?subject=Event inscription&body=';
-                              if (await canLaunch(email)) {await launch(email);} else {throw 'Could not email $email';}
-                            },
-                            child: Icon(Icons.email),
-                          ) else RaisedButton(
-                            onPressed: () async {
-                              String website ='http://'+widget.event.LienDInscription.first;
-                              if (await canLaunch(website)) {await launch(website);} else {throw 'Could not visite $website';}
-                            },
-                            child: Text('Website'),
+          widget.event.LienDInscription != null
+              ? Container(
+                  child: widget.event.LienDInscription.first != 'null'
+                      ? Container(
+                          child: Column(
+                            children: [
+                              Text(
+                                'Inscription',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Center(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    //telephone/email/website
+                                    if (widget.event.LienDInscription.first
+                                        .contains(RegExp(r'[0-9]')))
+                                      RaisedButton(
+                                        onPressed: () async {
+                                          String tel = 'tel:' +
+                                              widget
+                                                  .event.LienDInscription.first;
+                                          if (await canLaunch(tel)) {
+                                            await launch(tel);
+                                          } else {
+                                            throw 'Could not call $tel';
+                                          }
+                                        },
+                                        child: Icon(Icons.call),
+                                      )
+                                    else if (widget.event.LienDInscription.first
+                                        .contains('@'))
+                                      RaisedButton(
+                                        onPressed: () async {
+                                          String email = 'mailto:' +
+                                              widget.event.LienDInscription
+                                                  .first +
+                                              '?subject=Event inscription&body=';
+                                          if (await canLaunch(email)) {
+                                            await launch(email);
+                                          } else {
+                                            throw 'Could not email $email';
+                                          }
+                                        },
+                                        child: Icon(Icons.email),
+                                      )
+                                    else
+                                      RaisedButton(
+                                        onPressed: () async {
+                                          String website = 'http://' +
+                                              widget
+                                                  .event.LienDInscription.first;
+                                          if (await canLaunch(website)) {
+                                            await launch(website);
+                                          } else {
+                                            throw 'Could not visite $website';
+                                          }
+                                        },
+                                        child: Text('Website'),
+                                      ),
+
+                                    //telephone/email/website
+                                    widget.event.LienDInscription.length > 1
+                                        ? Container(
+                                            child: widget.event.LienDInscription[
+                                                            1] !=
+                                                        null &&
+                                                    widget.event.LienDInscription[
+                                                            1] !=
+                                                        'null'
+                                                ? Container(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        if (widget.event
+                                                            .LienDInscription[1]
+                                                            .contains(RegExp(
+                                                                r'[0-9]')))
+                                                          RaisedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String tel = 'tel:' +
+                                                                  widget.event
+                                                                      .LienDInscription[1];
+                                                              if (await canLaunch(
+                                                                  tel)) {
+                                                                await launch(
+                                                                    tel);
+                                                              } else {
+                                                                throw 'Could not call $tel';
+                                                              }
+                                                            },
+                                                            child: Icon(
+                                                                Icons.call),
+                                                          )
+                                                        else if (widget.event
+                                                            .LienDInscription[1]
+                                                            .contains('@'))
+                                                          RaisedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String email = 'mailto:' +
+                                                                  widget.event
+                                                                      .LienDInscription[1] +
+                                                                  '?subject=Event inscription&body=';
+                                                              if (await canLaunch(
+                                                                  email)) {
+                                                                await launch(
+                                                                    email);
+                                                              } else {
+                                                                throw 'Could not email $email';
+                                                              }
+                                                            },
+                                                            child: Icon(
+                                                                Icons.email),
+                                                          )
+                                                        else
+                                                          RaisedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String website =
+                                                                  'http://' +
+                                                                      widget
+                                                                          .event
+                                                                          .LienDInscription[1];
+                                                              if (await canLaunch(
+                                                                  website)) {
+                                                                await launch(
+                                                                    website);
+                                                              } else {
+                                                                throw 'Could not visite $website';
+                                                              }
+                                                            },
+                                                            child:
+                                                                Text('Website'),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : SizedBox.shrink(),
+                                          )
+                                        : SizedBox.shrink(),
+
+                                    //telephone/email/website
+                                    widget.event.LienDInscription.length > 2
+                                        ? Container(
+                                            child: widget.event.LienDInscription[
+                                                            2] !=
+                                                        null &&
+                                                    widget.event.LienDInscription[
+                                                            2] !=
+                                                        'null'
+                                                ? Container(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        if (widget.event
+                                                            .LienDInscription[2]
+                                                            .contains(RegExp(
+                                                                r'[0-9]')))
+                                                          RaisedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String tel = 'tel:' +
+                                                                  widget.event
+                                                                      .LienDInscription[1];
+                                                              if (await canLaunch(
+                                                                  tel)) {
+                                                                await launch(
+                                                                    tel);
+                                                              } else {
+                                                                throw 'Could not call $tel';
+                                                              }
+                                                            },
+                                                            child: Icon(
+                                                                Icons.call),
+                                                          )
+                                                        else if (widget.event
+                                                            .LienDInscription[2]
+                                                            .contains('@'))
+                                                          RaisedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String email = 'mailto:' +
+                                                                  widget.event
+                                                                      .LienDInscription[2] +
+                                                                  '?subject=Event inscription&body=';
+                                                              if (await canLaunch(
+                                                                  email)) {
+                                                                await launch(
+                                                                    email);
+                                                              } else {
+                                                                throw 'Could not email $email';
+                                                              }
+                                                            },
+                                                            child: Icon(
+                                                                Icons.email),
+                                                          )
+                                                        else
+                                                          RaisedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String website =
+                                                                  'http://' +
+                                                                      widget
+                                                                          .event
+                                                                          .LienDInscription[2];
+                                                              if (await canLaunch(
+                                                                  website)) {
+                                                                await launch(
+                                                                    website);
+                                                              } else {
+                                                                throw 'Could not visite $website';
+                                                              }
+                                                            },
+                                                            child:
+                                                                Text('Website'),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                : SizedBox.shrink(),
+                                          )
+                                        : SizedBox.shrink(),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-
-                        //telephone/email/website
-                        widget.event.LienDInscription.length>1 ? Container(
-                          child: widget.event.LienDInscription[1] != null && widget.event.LienDInscription[1] != 'null' ? Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                if (widget.event.LienDInscription[1].contains(RegExp(r'[0-9]')))
-                                  RaisedButton(
-                                    onPressed: () async {
-                                      String tel = 'tel:'+widget.event.LienDInscription[1];
-                                      if (await canLaunch(tel)) {await launch(tel);} else {throw 'Could not call $tel';}
-                                    },
-                                    child: Icon(Icons.call),
-                                  )
-                                else  if(widget.event.LienDInscription[1].contains('@'))
-                                  RaisedButton(
-                                    onPressed: () async {
-                                      String email = 'mailto:'+widget.event.LienDInscription[1]+'?subject=Event inscription&body=';
-                                      if (await canLaunch(email)) {await launch(email);} else {throw 'Could not email $email';}
-                                    },
-                                    child: Icon(Icons.email),
-                                  ) else RaisedButton(
-                                    onPressed: () async {
-                                      String website ='http://'+widget.event.LienDInscription[1];
-                                      if (await canLaunch(website)) {await launch(website);} else {throw 'Could not visite $website';}
-                                    },
-                                    child: Text('Website'),
-                                  ),
-                              ],
-                            ),
-                          ) : SizedBox.shrink(),
-                        ) : SizedBox.shrink(),
-
-                        //telephone/email/website
-                        widget.event.LienDInscription.length>2 ? Container(
-                          child: widget.event.LienDInscription[2] != null && widget.event.LienDInscription[2] != 'null' ? Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                if (widget.event.LienDInscription[2].contains(RegExp(r'[0-9]')))
-                                  RaisedButton(
-                                    onPressed: () async {
-                                      String tel = 'tel:'+widget.event.LienDInscription[1];
-                                      if (await canLaunch(tel)) {await launch(tel);} else {throw 'Could not call $tel';}
-                                    },
-                                    child: Icon(Icons.call),
-                                  )
-                                else  if(widget.event.LienDInscription[2].contains('@'))
-                                  RaisedButton(
-                                    onPressed: () async {
-                                      String email = 'mailto:'+widget.event.LienDInscription[2]+'?subject=Event inscription&body=';
-                                      if (await canLaunch(email)) {await launch(email);} else {throw 'Could not email $email';}
-                                    },
-                                    child: Icon(Icons.email),
-                                  ) else RaisedButton(
-                                    onPressed: () async {
-                                      String website ='http://'+widget.event.LienDInscription[2];
-                                      if (await canLaunch(website)) {await launch(website);} else {throw 'Could not visite $website';}
-                                    },
-                                    child: Text('Website'),
-                                  ),
-                              ],
-                            ),
-                          ) : SizedBox.shrink(),
-                        ) : SizedBox.shrink(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ) : SizedBox.shrink(),
-          ) : SizedBox.shrink(),
-
+                        )
+                      : SizedBox.shrink(),
+                )
+              : SizedBox.shrink(),
           Center(
             child: Column(
               children: [
@@ -310,6 +458,9 @@ class _EventPageState extends State<Eventpage> {
       ),
     );
   }
+
+  //TODO improve fonctionnalité organisateur, au lieu du mot de passe, faire un
+  // isOrganisateur(user,event) et requete firebase, en fonction du resultat on affiche le truc
 
   final controller = TextEditingController();
   final controllerRemplissage = TextEditingController();

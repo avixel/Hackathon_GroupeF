@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Parcours.dart';
 import 'jsonHandler.dart';
 import 'EventPage.dart';
 import 'Map.dart';
@@ -41,6 +42,22 @@ class _EventsState extends State<Events> {
                 },
                 child: Icon(
                   Icons.map,
+                  size: 26.0,
+                ),
+              )),
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ParcoursPage(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.add_location_sharp,
                   size: 26.0,
                 ),
               )),
@@ -93,7 +110,7 @@ class _EventsState extends State<Events> {
                               child: Text("When"),
                               onPressed: () {
                                 showSearch = false;
-                                showWhen  = true;
+                                showWhen = true;
                                 setState(() {});
                               })
                         ]))
