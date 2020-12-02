@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hackathon_groupe_f/register.dart';
 import 'Events.dart';
+import 'Service.dart';
 import 'constants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,6 +12,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
+
+  final controllerEmail = TextEditingController();
+  final controllerPassword = TextEditingController();
 
   Widget _buildEmailTF() {
     return Column(
@@ -26,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: controllerEmail,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
@@ -61,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: controllerPassword,
             obscureText: true,
             style: TextStyle(
               color: Colors.white,
@@ -129,12 +135,18 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () =>Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Events(),
-          ),
-        ),
+        onPressed: () {
+          login(controllerEmail.text, controllerPassword.text).then((value) {
+            if (value) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Events(),
+                ),
+              );
+            }
+          });
+        },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),

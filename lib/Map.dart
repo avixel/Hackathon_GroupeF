@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hackathon_groupe_f/EventPage.dart';
 import 'package:location/location.dart';
 import 'jsonHandler.dart';
 import 'dart:developer';
+import 'package:url_launcher/url_launcher.dart';
 
 class Map extends StatefulWidget {
   Map({Key key}) : super(key: key);
@@ -57,18 +59,18 @@ class _MapState extends State<Map>{
     });
   }
 
-  void _onMapCreated(GoogleMapController _cntlr)
+  void _onMapCreated (GoogleMapController _cntlr) async
   {
     _controller = _cntlr;
     setEventList();
 
-    _location.onLocationChanged.listen((l) {
-      _controller.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude, l.longitude),zoom: 10),
-        ),
-      );
-    });
+    LocationData loc = (await _location.getLocation());
+    _controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(loc.latitude, loc.longitude),zoom: 10),
+      ),
+    );
+
   }
 
   void _onMarkerTapped(int id) {
@@ -143,16 +145,29 @@ class _MapState extends State<Map>{
                         ),
                       )
                     ),
-                    Padding(
+                    getEventById().LienDInscription != null && getEventById().LienDInscription.first != 'null'
+                        && getEventById().LienDInscription.first.contains(RegExp(r'[0-9]'))? Padding(
                       padding: EdgeInsets.all(15),
                       child: IconButton(
-                        icon: Icon(Icons.add_call),
+                        onPressed: () async {
+                          String tel = 'tel:'+getEventById().LienDInscription.first;
+                          if (await canLaunch(tel)) {await launch(tel);} else {throw 'Could not call $tel';}
+                        },
+                        icon: Icon(Icons.call),
                       )
-                    ),
+                    ) : Padding(padding: EdgeInsets.all(15)),
                     Padding(
                         padding: EdgeInsets.all(15),
                         child: IconButton(
                           icon: Icon(Icons.star),
+                          onPressed: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Eventpage(event: getEventById()),
+                              ),
+                            );
+                          },
                         )
                     ),
                   ],

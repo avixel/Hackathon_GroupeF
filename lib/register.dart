@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hackathon_groupe_f/Service.dart';
 import 'Events.dart';
 import 'constants.dart';
 
@@ -9,6 +10,9 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final controllerEmail = TextEditingController();
+  final controllerPassword = TextEditingController();
+
   Widget _buildEmailTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,6 +27,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: controllerEmail,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
@@ -58,6 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: controllerPassword,
             obscureText: true,
             style: TextStyle(
               color: Colors.white,
@@ -85,12 +91,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Events(),
-          ),
-        ),
+        onPressed: () {
+          register(controllerEmail.text, controllerPassword.text).then((value) {
+            if (value) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Events(),
+                ),
+              );
+            }
+          });
+        },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
