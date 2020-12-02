@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon_groupe_f/DataBase.dart';
 import 'Service.dart';
+import 'constants.dart';
 import 'jsonHandler.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -77,9 +78,11 @@ class _EventPageState extends State<Eventpage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: widget.event.image != null
-                ? Expanded(
-                    child:
-                        Image.network(widget.event.image, fit: BoxFit.contain))
+                ? Row(children: [
+                    Expanded(
+                        child: Image.network(widget.event.image,
+                            fit: BoxFit.contain))
+                  ])
                 : SizedBox.shrink(),
           ),
           widget.event.descriptionLongue != null &&
@@ -313,7 +316,8 @@ class _EventPageState extends State<Eventpage> {
               children: [
                 Text("Your rating"),
                 FutureBuilder<double>(
-                    future: getRating(auth.currentUser.email, widget.event.titre),
+                    future:
+                        getRating(auth.currentUser.email, widget.event.titre),
                     builder:
                         (BuildContext context, AsyncSnapshot<double> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -366,11 +370,118 @@ class _EventPageState extends State<Eventpage> {
                     }
                   },
                 ),
+                FutureBuilder<double>(
+                  future: getRemplissage(widget.event.titre),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<double> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: Text("loading"));
+                    } else {
+                      if (snapshot.hasError)
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      else
+                        return Text(
+                            "Remplissage : " + snapshot.data.toString());
+                    }
+                  },
+                ),
+                orga(widget.event)
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  final controller = TextEditingController();
+  final controllerRemplissage = TextEditingController();
+
+  bool displayRemplissageEditor = false;
+
+  Widget orga(Event event) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        if (!displayRemplissageEditor)
+          Text(
+            'Password',
+            style: kLabelStyle,
+          ),
+        if (!displayRemplissageEditor) SizedBox(height: 10.0),
+        if (!displayRemplissageEditor)
+          Container(
+            alignment: Alignment.centerLeft,
+            decoration: kBoxDecorationStyle,
+            height: 60.0,
+            child: TextField(
+              controller: controller,
+              obscureText: true,
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'OpenSans',
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14.0),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Colors.white,
+                ),
+                hintText: 'Enter your orga Password',
+                hintStyle: kHintTextStyle,
+              ),
+            ),
+          ),
+        if (!displayRemplissageEditor)
+          TextButton(
+            child: Text("GO"),
+            onPressed: () {
+              orgaMDP(event.titre, controllerRemplissage.text).then((value) {
+                if (value) {
+                  displayRemplissageEditor = true;
+                  setState(() {});
+                }
+              });
+            },
+          ),
+        if (displayRemplissageEditor)
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Remplissage',
+                  style: kLabelStyle,
+                ),
+                SizedBox(height: 10.0),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  decoration: kBoxDecorationStyle,
+                  height: 60.0,
+                  child: TextField(
+                    controller: controllerRemplissage,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'OpenSans',
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(top: 14.0),
+                      hintText: 'Remplissage',
+                      hintStyle: kHintTextStyle,
+                    ),
+                  ),
+                ),
+                TextButton(
+                    child: Text("GO"),
+                    onPressed: () {
+                      addRemplissage(controllerRemplissage.text, event.titre)
+                          .then((value) {
+                        setState(() {});
+                      });
+                    }),
+              ])
+      ],
     );
   }
 }
