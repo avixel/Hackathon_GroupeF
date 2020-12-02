@@ -1,8 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hackathon_groupe_f/DataBase.dart';
 import 'package:hackathon_groupe_f/Events.dart';
 import 'jsonHandler.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -10,6 +16,7 @@ class MyApp extends StatelessWidget {
     loadEvents();
     return MaterialApp(
       title: 'Hackaton',
+      debugShowCheckedModeBanner: false,
       home: Events(),
     );
   }

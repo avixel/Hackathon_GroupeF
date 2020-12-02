@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'filters.dart';
 import 'jsonHandler.dart';
 import 'EventPage.dart';
 import 'Map.dart';
@@ -14,41 +15,59 @@ class Events extends StatefulWidget {
 class _EventsState extends State<Events> {
   TextEditingController editingController = TextEditingController();
 
+  String searchValue = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Events"),
-          actions: <Widget>[
-            Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Map(),
-                      ),
-                    );
-                  },
-                  child: Icon(
-                    Icons.map,
-                    size: 26.0,
-                  ),
-                )
-            ),
-          ]
-        ),
+        appBar: AppBar(title: Text("Events"), actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Map(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.map,
+                  size: 26.0,
+                ),
+              )),
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Filters(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.search,
+                  size: 26.0,
+                ),
+              )),
+        ]),
         body: Container(
-            child: Column(children: [
+            child: ListView(children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                searchValue = value;
+
+                setState(() {});
+              },
               controller: editingController,
               decoration: InputDecoration(
                   labelText: "Search",
-                  hintText: "Search",
+                  hintText: "",
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25.0)))),
@@ -60,18 +79,26 @@ class _EventsState extends State<Events> {
               future: loadEvents(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) print(snapshot.error);
-                var list = snapshot.data.events;
-                return snapshot.hasData
-                    ? ListView.builder(
-                        itemCount: list.length,
-                        padding: const EdgeInsets.all(8),
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            height: 100,
-                            child: buildCard(context, list[index]),
-                          );
-                        })
-                    : Center(child: CircularProgressIndicator());
+
+                if (snapshot.hasData) {
+                  if (snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  var list = snapshot.data.events
+                      .where((element) => element.titre.contains(searchValue))
+                      .toList();
+                  return ListView.builder(
+                      itemCount: list.length,
+                      padding: const EdgeInsets.all(8),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          height: 100,
+                          child: buildCard(context, list.elementAt(index)),
+                        );
+                      });
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
               },
             ),
           )
@@ -89,7 +116,9 @@ Card buildCard(context, Event event) {
           maxWidth: 64,
           maxHeight: 64,
         ),
-        child: Image.network(event.image, fit: BoxFit.cover),
+        child: event.image != null
+            ? Image.network(event.image, fit: BoxFit.cover)
+            : Text(""),
       ),
       title: event.titre != null
           ? Row(children: [
