@@ -45,7 +45,7 @@ class _EventPageState extends State<Eventpage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text("Nombre d'evenement", style: TextStyle(fontWeight: FontWeight.bold),),
+                    Text("Nombre d'evenements", style: TextStyle(fontWeight: FontWeight.bold),),
                     widget.event.nombreEvenements != null ?
                     Text(widget.event.nombreEvenements, textAlign: TextAlign.end , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21, color: Colors.green),) : SizedBox.shrink(),
                   ],
@@ -75,7 +75,7 @@ class _EventPageState extends State<Eventpage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Horaire',textAlign: TextAlign.start,style: TextStyle(fontWeight: FontWeight.bold),),
+                child: Text('Horaires',textAlign: TextAlign.start,style: TextStyle(fontWeight: FontWeight.bold),),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

@@ -38,6 +38,7 @@
       <change beforePath="$PROJECT_DIR$/build/app/outputs/flutter-apk/app.apk" beforeDir="false" afterPath="$PROJECT_DIR$/build/app/outputs/flutter-apk/app.apk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/app/outputs/flutter-apk/app.apk.sha1" beforeDir="false" afterPath="$PROJECT_DIR$/build/app/outputs/flutter-apk/app.apk.sha1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/f872507f30e2ff2523f0f1d19160266e.cache.dill.track.dill" beforeDir="false" afterPath="$PROJECT_DIR$/build/f872507f30e2ff2523f0f1d19160266e.cache.dill.track.dill" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/EventPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/EventPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Map.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Map.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +46,6 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[5200e9d7ec7535f3]" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -121,26 +121,26 @@
       <screen x="0" y="0" width="1920" height="1043" />
     </state>
     <state x="742" y="280" width="428" height="484" key="FileChooserDialogImpl/0.0.1920.1043@0.0.1920.1043" timestamp="1606811939411" />
-    <state width="1261" height="175" key="GridCell.Tab.0.bottom" timestamp="1606900105491">
+    <state width="1261" height="175" key="GridCell.Tab.0.bottom" timestamp="1606907576341">
       <screen x="59" y="27" width="1307" height="741" />
     </state>
     <state width="1874" height="275" key="GridCell.Tab.0.bottom/0.0.1920.1043@0.0.1920.1043" timestamp="1606829251031" />
-    <state width="1261" height="175" key="GridCell.Tab.0.bottom/59.27.1307.741@59.27.1307.741" timestamp="1606900105490" />
-    <state width="1261" height="175" key="GridCell.Tab.0.center" timestamp="1606900105489">
+    <state width="1261" height="175" key="GridCell.Tab.0.bottom/59.27.1307.741@59.27.1307.741" timestamp="1606907576341" />
+    <state width="1261" height="175" key="GridCell.Tab.0.center" timestamp="1606907576341">
       <screen x="59" y="27" width="1307" height="741" />
     </state>
     <state width="1874" height="275" key="GridCell.Tab.0.center/0.0.1920.1043@0.0.1920.1043" timestamp="1606829251031" />
-    <state width="1261" height="175" key="GridCell.Tab.0.center/59.27.1307.741@59.27.1307.741" timestamp="1606900105489" />
-    <state width="1261" height="175" key="GridCell.Tab.0.left" timestamp="1606900105488">
+    <state width="1261" height="175" key="GridCell.Tab.0.center/59.27.1307.741@59.27.1307.741" timestamp="1606907576341" />
+    <state width="1261" height="175" key="GridCell.Tab.0.left" timestamp="1606907576340">
       <screen x="59" y="27" width="1307" height="741" />
     </state>
     <state width="1874" height="275" key="GridCell.Tab.0.left/0.0.1920.1043@0.0.1920.1043" timestamp="1606829251031" />
-    <state width="1261" height="175" key="GridCell.Tab.0.left/59.27.1307.741@59.27.1307.741" timestamp="1606900105488" />
-    <state width="1261" height="175" key="GridCell.Tab.0.right" timestamp="1606900105490">
+    <state width="1261" height="175" key="GridCell.Tab.0.left/59.27.1307.741@59.27.1307.741" timestamp="1606907576340" />
+    <state width="1261" height="175" key="GridCell.Tab.0.right" timestamp="1606907576341">
       <screen x="59" y="27" width="1307" height="741" />
     </state>
     <state width="1874" height="275" key="GridCell.Tab.0.right/0.0.1920.1043@0.0.1920.1043" timestamp="1606829251031" />
-    <state width="1261" height="175" key="GridCell.Tab.0.right/59.27.1307.741@59.27.1307.741" timestamp="1606900105490" />
+    <state width="1261" height="175" key="GridCell.Tab.0.right/59.27.1307.741@59.27.1307.741" timestamp="1606907576341" />
     <state x="344" y="38" key="SettingsEditor" timestamp="1606835425095">
       <screen x="59" y="27" width="1307" height="741" />
     </state>

@@ -18,9 +18,10 @@ class _MapState extends State<Map>{
 
   LatLng _initialcameraposition = LatLng(20.5937, 78.9629);
   GoogleMapController _controller;
+  Location _location = Location();
+
   Set<Marker> _markers = Set();
   Marker _selMarker;
-  Location _location = Location();
 
   double infoPos = -100;
 
@@ -37,17 +38,21 @@ class _MapState extends State<Map>{
     setState(() {
       int id = 0;
       for(Event e in events){
-        _markers.add(
-          Marker(
-              markerId: MarkerId(id.toString()),
-              position: LatLng(30+id*0.1, 30+id*0.1),
-              icon: BitmapDescriptor.defaultMarker,
-              onTap: (){
-                _onMarkerTapped(id); // remplacer par l'id dans le for
-              }
-          ),
-        );
-        id++;
+        //log((e.geolocalisation.elementAt(0) as double).toString());
+        try{
+          int tid = id;
+          _markers.add(
+            Marker(
+                markerId: MarkerId(id.toString()),
+                position: LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0),
+                icon: BitmapDescriptor.defaultMarker,
+                onTap: (){
+                  _onMarkerTapped(tid); // remplacer par l'id dans le for
+                }
+            ),
+          );
+          id++;
+        } catch(NoSuchMethodError){}
       }
     });
   }
@@ -57,12 +62,10 @@ class _MapState extends State<Map>{
     _controller = _cntlr;
     setEventList();
 
-    //_selMarker = _markers.elementAt(0);
-
     _location.onLocationChanged.listen((l) {
       _controller.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude, l.longitude),zoom: 5),
+          CameraPosition(target: LatLng(l.latitude, l.longitude),zoom: 10),
         ),
       );
     });
@@ -74,6 +77,13 @@ class _MapState extends State<Map>{
         infoPos = 0;
       });
   }
+
+  Event getEventById(){
+      if(_selMarker == null){
+        return Event(titre:"", description:"", image:"", typeDAnimation:"", horaireDetaile:"",nomDuLieu:"", ville:"",
+            descriptionLongue:"", horaire:"", nombreEvenements:"", geolocalisation:[]);
+      } else return events.elementAt(int.parse(_selMarker.markerId.value));
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +127,8 @@ class _MapState extends State<Map>{
                       margin: EdgeInsets.only(left:15),
                       width: 70, height: 70,
                       child: ClipOval(
-                        //child:
-                            //Image.network(widget.events.elementAt(int.parse(_selMarker.markerId.toString())).image, fit: BoxFit.cover)
+                        child:
+                            Image.network(getEventById().image, fit: BoxFit.cover)
                       )
                     ),
                     Expanded(
@@ -128,8 +138,7 @@ class _MapState extends State<Map>{
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            //Text(widget.events.elementAt(int.parse(_selMarker.markerId.toString())).titre),
-                            Text(_selMarker.toString())
+                            Text(getEventById().titre),
                           ],
                         ),
                       )
