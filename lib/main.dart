@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hackathon_groupe_f/DataBase.dart';
 import 'package:hackathon_groupe_f/Events.dart';
 import 'jsonHandler.dart';
+import 'login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hackaton',
       debugShowCheckedModeBanner: false,
-      home: Events(),
+      home: LoginScreen(),
     );
   }
 }
