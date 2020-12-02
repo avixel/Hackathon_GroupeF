@@ -3,16 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 
+EventsList eventsListt;
 
 Future<String> _loadEventsAsset() async {
   return await rootBundle.loadString('assets/data.json');
 }
 
 Future<EventsList> loadEvents() async {
+  if (eventsListt != null) {
+    return eventsListt;
+  }
   String jsonEvents = await _loadEventsAsset();
   final jsonResponse = json.decode(jsonEvents);
   EventsList eventsList = EventsList.fromJson(jsonResponse);
+  eventsListt = eventsList;
   return eventsList;
+}
+
+EventsList getEventsList() {
+  return eventsListt;
 }
 
 class EventsList {
@@ -46,9 +55,18 @@ class Event {
 
   final List geolocalisation;
 
-
-  Event({this.titre, this.description, this.image, this.typeDAnimation, this.horaireDetaile,this.nomDuLieu, this.ville,
-    this.descriptionLongue, this.horaire, this .nombreEvenements, this.geolocalisation});
+  Event(
+      {this.titre,
+      this.description,
+      this.image,
+      this.typeDAnimation,
+      this.horaireDetaile,
+      this.nomDuLieu,
+      this.ville,
+      this.descriptionLongue,
+      this.horaire,
+      this.nombreEvenements,
+      this.geolocalisation});
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return new Event(
@@ -63,7 +81,6 @@ class Event {
       descriptionLongue: json['fields']['description_longue_fr'].toString(),
       nombreEvenements: json['fields']['nb_evenements'].toString(),
       geolocalisation: json['fields']['geolocalisation'],
-
     );
   }
 }

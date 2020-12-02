@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'filters.dart';
 import 'jsonHandler.dart';
 import 'EventPage.dart';
 import 'Map.dart';
@@ -15,7 +14,15 @@ class Events extends StatefulWidget {
 class _EventsState extends State<Events> {
   TextEditingController editingController = TextEditingController();
 
-  String searchValue = "";
+  String searchValueWhere = "";
+  String searchValueWhat = "";
+  String searchValueWhen = "";
+
+  var showWhere = false;
+  var showWhen = false;
+  var showWhat = false;
+
+  var showSearch = true;
 
   @override
   Widget build(BuildContext context) {
@@ -37,72 +44,99 @@ class _EventsState extends State<Events> {
                   size: 26.0,
                 ),
               )),
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Filters(),
-                    ),
-                  );
-                },
-                child: Icon(
-                  Icons.search,
-                  size: 26.0,
-                ),
-              )),
         ]),
-        body: Container(
-            child: ListView(children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (value) {
-                searchValue = value;
+        body: ListView(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            children: [
+              if (showSearch || true)
+                Row(
+                  children: [
+                    Container(
+                        margin: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(3.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blueAccent)),
+                        child: Row(children: [
+                          Icon(Icons.search),
+                          TextButton(
+                              child: Text("Where"),
+                              onPressed: () {
+                                showSearch = false;
+                                showWhere = true;
+                                setState(() {});
+                              })
+                        ])),
+                    Container(
+                        margin: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(3.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blueAccent)),
+                        child: Row(children: [
+                          Icon(Icons.search),
+                          TextButton(
+                              child: Text("What"),
+                              onPressed: () {
+                                showSearch = false;
+                                showWhat = true;
+                                setState(() {});
+                              })
+                        ])),
+                    Container(
+                        margin: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(3.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blueAccent)),
+                        child: Row(children: [
+                          Icon(Icons.search),
+                          TextButton(
+                              child: Text("When"),
+                              onPressed: () {
+                                showSearch = false;
+                                showWhen  = true;
+                                setState(() {});
+                              })
+                        ]))
+                  ],
+                ),
+              Container(
+                  child: ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      children: [
+                    Container(
+                      height: 500.0,
+                      child: FutureBuilder<EventsList>(
+                        future: loadEvents(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) print(snapshot.error);
 
-                setState(() {});
-              },
-              controller: editingController,
-              decoration: InputDecoration(
-                  labelText: "Search",
-                  hintText: "",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-            ),
-          ),
-          Container(
-            height: 500.0,
-            child: FutureBuilder<EventsList>(
-              future: loadEvents(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) print(snapshot.error);
-
-                if (snapshot.hasData) {
-                  if (snapshot.data == null) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  var list = snapshot.data.events
-                      .where((element) => element.titre.contains(searchValue))
-                      .toList();
-                  return ListView.builder(
-                      itemCount: list.length,
-                      padding: const EdgeInsets.all(8),
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          height: 100,
-                          child: buildCard(context, list.elementAt(index)),
-                        );
-                      });
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          )
-        ])));
+                          if (snapshot.hasData) {
+                            if (snapshot.data == null) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            var list = snapshot.data.events
+                                .where((element) =>
+                                    element.titre.contains(searchValueWhat))
+                                .toList();
+                            return ListView.builder(
+                                itemCount: list.length,
+                                padding: const EdgeInsets.all(8),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Container(
+                                    height: 100,
+                                    child: buildCard(
+                                        context, list.elementAt(index)),
+                                  );
+                                });
+                          } else {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        },
+                      ),
+                    )
+                  ]))
+            ]));
   }
 }
 
