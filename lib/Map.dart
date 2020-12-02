@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'jsonHandler.dart';
+import 'dart:developer';
 
 class Map extends StatefulWidget {
-  Map({Key key, this.title}) : super(key: key);
-
-  final String title;
+  Map({Key key}) : super(key: key);
 
   @override
   _MapState createState() => _MapState();
 }
 
-class _MapState extends State<Map> {
-  int _counter = 0;
+class _MapState extends State<Map>{
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<Event> events;
 
   LatLng _initialcameraposition = LatLng(20.5937, 78.9629);
   GoogleMapController _controller;
@@ -24,21 +24,40 @@ class _MapState extends State<Map> {
 
   double infoPos = -100;
 
+  void setEventList() async{
+    List<Event> res;
+    res = (await loadEvents()).events;
+    setState(() {
+      events = res;
+      updateMarkers();
+    });
+}
+
+  void updateMarkers(){
+    setState(() {
+      int id = 0;
+      for(Event e in events){
+        _markers.add(
+          Marker(
+              markerId: MarkerId(id.toString()),
+              position: LatLng(30+id*0.1, 30+id*0.1),
+              icon: BitmapDescriptor.defaultMarker,
+              onTap: (){
+                _onMarkerTapped(id); // remplacer par l'id dans le for
+              }
+          ),
+        );
+        id++;
+      }
+    });
+  }
+
   void _onMapCreated(GoogleMapController _cntlr)
   {
     _controller = _cntlr;
-    setState(() {
-      _markers.add(
-        Marker(
-            markerId: MarkerId("0"),
-            position: LatLng(45.7881142, 3.1002749),
-            icon: BitmapDescriptor.defaultMarker,
-            onTap: (){
-              _onMarkerTapped(0); // remplacer par l'id dans le for
-            }
-        ),
-      );
-    });
+    setEventList();
+
+    //_selMarker = _markers.elementAt(0);
 
     _location.onLocationChanged.listen((l) {
       _controller.animateCamera(
@@ -87,7 +106,7 @@ class _MapState extends State<Map> {
                 margin: EdgeInsets.all(10),
                 height: 100,
                 decoration: BoxDecoration(
-                  color: Colors.white70,
+                  color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Row(
@@ -98,8 +117,8 @@ class _MapState extends State<Map> {
                       margin: EdgeInsets.only(left:15),
                       width: 70, height: 70,
                       child: ClipOval(
-                        child:
-                          Image.network("https://cibul.s3.amazonaws.com/c296a0c7cf5e4d8496a3e875595a404b.base.image.jpg", fit: BoxFit.cover)
+                        //child:
+                            //Image.network(widget.events.elementAt(int.parse(_selMarker.markerId.toString())).image, fit: BoxFit.cover)
                       )
                     ),
                     Expanded(
@@ -109,8 +128,8 @@ class _MapState extends State<Map> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Marker"),
-                            //Text(_selMarker.toString())
+                            //Text(widget.events.elementAt(int.parse(_selMarker.markerId.toString())).titre),
+                            Text(_selMarker.toString())
                           ],
                         ),
                       )
