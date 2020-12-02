@@ -17,6 +17,7 @@ class Eventpage extends StatefulWidget {
 class _EventPageState extends State<Eventpage> {
   var rating = 0.0;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
