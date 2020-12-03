@@ -56,18 +56,6 @@ Future<double> getAverageScore(event) async {
   return (total / count);
 }
 
-Future<bool> orgaMDP(event, mdp) async {
-  var temp = orgas.doc(event.substring(0,10));
-
-  bool res = false;
-
-  await temp.get().then((docSnapshot) {
-    if (docSnapshot.exists) {
-      res = (docSnapshot.get("mdp") == mdp);
-    }
-  });
-  return res;
-}
 
 Future<double> getRemplissage(String event) async {
   var temp = remplissage.doc(event.substring(0,10));
@@ -126,4 +114,19 @@ Future<bool> addParcours(user,Parcours parc) async {
     }
   });
   return true;
+}
+
+
+
+Future<bool> isOrganistaeur(event, user) async {
+  var temp = orgas.doc(event.substring(0,10));
+
+  bool res = false;
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      res = (docSnapshot.get("orgas").contains(user));
+    }
+  });
+  return res;
 }

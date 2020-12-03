@@ -31,7 +31,7 @@ class _EventPageState extends State<Eventpage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ParcoursPage(event : widget.event),
+                    builder: (context) => ParcoursPage(event: widget.event),
                   ),
                 );
               },
@@ -188,13 +188,13 @@ class _EventPageState extends State<Eventpage> {
                                     else
                                       RaisedButton(
                                         onPressed: () async {
-                                          String website = 'http://' +
+                                          String website = 'htt p://' +
                                               widget
                                                   .event.LienDInscription.first;
                                           if (await canLaunch(website)) {
                                             await launch(website);
                                           } else {
-                                            throw 'Could not visite $website';
+                                            throw 'Could not visit $website';
                                           }
                                         },
                                         child: Text('Website'),
@@ -271,7 +271,7 @@ class _EventPageState extends State<Eventpage> {
                                                                 await launch(
                                                                     website);
                                                               } else {
-                                                                throw 'Could not visite $website';
+                                                                throw 'Could not visit $website';
                                                               }
                                                             },
                                                             child:
@@ -355,7 +355,7 @@ class _EventPageState extends State<Eventpage> {
                                                                 await launch(
                                                                     website);
                                                               } else {
-                                                                throw 'Could not visite $website';
+                                                                throw 'Could not visit $website';
                                                               }
                                                             },
                                                             child:
@@ -459,97 +459,62 @@ class _EventPageState extends State<Eventpage> {
     );
   }
 
-  //TODO improve fonctionnalité organisateur, au lieu du mot de passe, faire un
-  // isOrganisateur(user,event) et requete firebase, en fonction du resultat on affiche le truc
-
   final controller = TextEditingController();
   final controllerRemplissage = TextEditingController();
 
-  bool displayRemplissageEditor = false;
-
-  Widget orga(Event event) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        if (!displayRemplissageEditor)
-          Text(
-            'Password',
-            style: kLabelStyle,
-          ),
-        if (!displayRemplissageEditor) SizedBox(height: 10.0),
-        if (!displayRemplissageEditor)
-          Container(
-            alignment: Alignment.centerLeft,
-            decoration: kBoxDecorationStyle,
-            height: 60.0,
-            child: TextField(
-              controller: controller,
-              obscureText: true,
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'OpenSans',
-              ),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.only(top: 14.0),
-                prefixIcon: Icon(
-                  Icons.lock,
-                  color: Colors.white,
-                ),
-                hintText: 'Enter your orga Password',
-                hintStyle: kHintTextStyle,
-              ),
-            ),
-          ),
-        if (!displayRemplissageEditor)
-          TextButton(
-            child: Text("GO"),
-            onPressed: () {
-              orgaMDP(event.titre, controllerRemplissage.text).then((value) {
-                if (value) {
-                  displayRemplissageEditor = true;
-                  setState(() {});
-                }
-              });
-            },
-          ),
-        if (displayRemplissageEditor)
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Remplissage',
-                  style: kLabelStyle,
-                ),
-                SizedBox(height: 10.0),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  decoration: kBoxDecorationStyle,
-                  height: 60.0,
-                  child: TextField(
-                    controller: controllerRemplissage,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'OpenSans',
-                    ),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(top: 14.0),
-                      hintText: 'Remplissage',
-                      hintStyle: kHintTextStyle,
-                    ),
-                  ),
-                ),
-                TextButton(
-                    child: Text("GO"),
-                    onPressed: () {
-                      addRemplissage(controllerRemplissage.text, event.titre)
-                          .then((value) {
-                        setState(() {});
-                      });
-                    }),
-              ])
-      ],
-    );
+  FutureBuilder<bool> orga(Event event) {
+    return FutureBuilder<bool>(
+        future: isOrganistaeur(widget.event.titre, auth.currentUser.email),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Text("loading"));
+          } else {
+            if (snapshot.hasError)
+              return Center(child: Text('Error: ${snapshot.error}'));
+            else
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  if (snapshot.data)
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Remplissage',
+                            style: kLabelStyle,
+                          ),
+                          SizedBox(height: 10.0),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            decoration: kBoxDecorationStyle,
+                            height: 60.0,
+                            child: TextField(
+                              controller: controllerRemplissage,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'OpenSans',
+                              ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(top: 14.0),
+                                hintText: 'Remplissage',
+                                hintStyle: kHintTextStyle,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                              child: Text("GO"),
+                              onPressed: () {
+                                addRemplissage(
+                                        controllerRemplissage.text, event.titre)
+                                    .then((value) {
+                                  setState(() {});
+                                });
+                              }),
+                        ])
+                ],
+              );
+          }
+        });
   }
 }
