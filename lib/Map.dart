@@ -3,7 +3,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon_groupe_f/EventPage.dart';
 import 'package:location/location.dart';
 import 'jsonHandler.dart';
-import 'dart:developer';
 import 'package:url_launcher/url_launcher.dart';
 
 class Map extends StatefulWidget {
@@ -155,10 +154,10 @@ class _MapState extends State<Map> {
                         ],
                       ),
                     )),
-                    getEventById().LienDInscription != null &&
-                            getEventById().LienDInscription.first != 'null' &&
+                    getEventById().lienDInscription != null &&
+                            getEventById().lienDInscription.first != 'null' &&
                             getEventById()
-                                .LienDInscription
+                                .lienDInscription
                                 .first
                                 .contains(RegExp(r'[0-9]'))
                         ? Padding(
@@ -166,7 +165,7 @@ class _MapState extends State<Map> {
                             child: IconButton(
                               onPressed: () async {
                                 String tel = 'tel:' +
-                                    getEventById().LienDInscription.first;
+                                    getEventById().lienDInscription.first;
                                 if (await canLaunch(tel)) {
                                   await launch(tel);
                                 } else {

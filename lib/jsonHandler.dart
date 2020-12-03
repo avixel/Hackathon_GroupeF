@@ -1,5 +1,4 @@
 import 'dart:async' show Future;
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 
@@ -52,7 +51,7 @@ class Event {
   final String ville;
   final String descriptionLongue;
   final String nombreEvenements;
-  final List<String> LienDInscription;
+  final List<String> lienDInscription;
 
   final List geolocalisation;
 
@@ -67,7 +66,7 @@ class Event {
         'ville': ville,
         'descriptionLongue': descriptionLongue,
         'nombreEvenements': nombreEvenements,
-        'LienDInscription': LienDInscription,
+        'lienDInscription': lienDInscription,
         'geolocalisation': geolocalisation,
       };
 
@@ -83,7 +82,7 @@ class Event {
     this.horaire,
     this.nombreEvenements,
     this.geolocalisation,
-    this.LienDInscription,
+    this.lienDInscription,
   });
 
   factory Event.customFromJson(Map<String, dynamic> json) {
@@ -99,7 +98,7 @@ class Event {
       descriptionLongue: json['descriptionLongue'].toString(),
       nombreEvenements: json['nombreEvenements'].toString(),
       geolocalisation: json['geolocalisation'],
-      LienDInscription: json['LienDInscription'].toString().split(','),
+      lienDInscription: json['lienDInscription'].toString().split(','),
     );
   }
 
@@ -116,7 +115,7 @@ class Event {
       descriptionLongue: json['fields']['description_longue_fr'].toString(),
       nombreEvenements: json['fields']['nb_evenements'].toString(),
       geolocalisation: json['fields']['geolocalisation'],
-      LienDInscription:
+      lienDInscription:
           json['fields']['lien_d_inscription'].toString().split(','),
     );
   }

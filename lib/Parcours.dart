@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon_groupe_f/DataBase.dart';
-import 'dart:math';
+import 'package:hackathon_groupe_f/SharedParcours.dart';
 import 'Service.dart';
 import 'jsonHandler.dart';
 
@@ -24,9 +24,25 @@ class _ParcoursPageState extends State<ParcoursPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Parcours"),
-      ),
+      appBar: AppBar(title: Text("Parcours"), actions: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: ()  {
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SharedParcoursPage(),
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.folder_shared,
+                size: 26.0,
+              ),
+            )),
+      ]),
       body: ListView(children: [
         FutureBuilder<List<Parcours>>(
             future: getParcours(auth.currentUser.email),
@@ -57,21 +73,36 @@ class _ParcoursPageState extends State<ParcoursPage> {
                                 onPressed: () async {
                                   var v = snapshot.data[index].events;
                                   v.add(widget.event);
-                                  await addParcours(auth.currentUser.email,
-                                          Parcours(snapshot.data[index].name, v))
+                                  await addParcours(
+                                          auth.currentUser.email,
+                                          Parcours(
+                                              snapshot.data[index].name, v))
                                       .then((value) {});
                                   setState(() {});
                                 },
                               ),
+                            TextButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.green),
+                              ),
+                              child: Text("SHARE"),
+                              onPressed: () async {
+                                var v = snapshot.data[index].events;
+                                await addSharedParcours(auth.currentUser.email,
+                                        Parcours(snapshot.data[index].name, v))
+                                    .then((value) {});
+                                setState(() {});
+                              },
+                            ),
                           ]),
                           ListView.builder(
                               shrinkWrap: true,
                               itemCount: snapshot.data[index].events.length,
                               itemBuilder: (BuildContext c, int i) {
-                                return new Text(snapshot.data[index].events[i].titre);
-                                //return new Text(snapshot
-                                //  .data[index].events[i].titre
-                                //.substring(0, min(50,snapshot.data[index].events[i].titre.length)));
+                                return new Text(
+                                    snapshot.data[index].events[i].titre);
                               })
                         ]);
                       });

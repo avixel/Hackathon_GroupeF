@@ -124,6 +124,39 @@ Future<bool> addParcours(user, Parcours parc) async {
   return true;
 }
 
+Future<List<Parcours>> getSharedParcours() async {
+  List<Parcours> res = [];
+  Map<String, dynamic> map;
+
+  await sharedParcours.get().then((value) => value.docs.forEach((element) {
+        map = element.data();
+        if (map != null) {
+          for (var v in map.values) {
+            var j = json.decode(v);
+            Parcours p = Parcours.fromJson(j);
+            res.add(p);
+          }
+        }
+      }));
+  return res;
+}
+
+Future<bool> addSharedParcours(user, Parcours parc) async {
+  var temp = sharedParcours.doc(user);
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      return temp.update({parc.name: jsonEncode(parc.toJson())});
+    } else {
+      return temp
+          .set({parc.name: jsonEncode(parc.toJson())})
+          .then((value) => print("parcours uploaded"))
+          .catchError(
+              (error) => print("Error while uploading " + error.toString()));
+    }
+  });
+  return true;
+}
+
 Future<bool> isOrganistaeur(event, user) async {
   var temp = orgas.doc(event.substring(0, 10));
 

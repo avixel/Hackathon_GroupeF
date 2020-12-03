@@ -55,7 +55,7 @@ class _EventsState extends State<Events> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ParcoursPage(),
+                      builder: (context) => ParcoursPage(event: null),
                     ),
                   );
                 },

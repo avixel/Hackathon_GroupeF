@@ -140,9 +140,9 @@ class _EventPageState extends State<Eventpage> {
                   ],
                 )
               : SizedBox.shrink(),
-          widget.event.LienDInscription != null
+          widget.event.lienDInscription != null
               ? Container(
-                  child: widget.event.LienDInscription.first != 'null'
+                  child: widget.event.lienDInscription.first != 'null'
                       ? Container(
                           child: Column(
                             children: [
@@ -156,13 +156,13 @@ class _EventPageState extends State<Eventpage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     //telephone/email/website
-                                    if (widget.event.LienDInscription.first
+                                    if (widget.event.lienDInscription.first
                                         .contains(RegExp(r'[0-9]')))
                                       RaisedButton(
                                         onPressed: () async {
                                           String tel = 'tel:' +
                                               widget
-                                                  .event.LienDInscription.first;
+                                                  .event.lienDInscription.first;
                                           if (await canLaunch(tel)) {
                                             await launch(tel);
                                           } else {
@@ -171,12 +171,12 @@ class _EventPageState extends State<Eventpage> {
                                         },
                                         child: Icon(Icons.call),
                                       )
-                                    else if (widget.event.LienDInscription.first
+                                    else if (widget.event.lienDInscription.first
                                         .contains('@'))
                                       RaisedButton(
                                         onPressed: () async {
                                           String email = 'mailto:' +
-                                              widget.event.LienDInscription
+                                              widget.event.lienDInscription
                                                   .first +
                                               '?subject=Event inscription&body=';
                                           if (await canLaunch(email)) {
@@ -192,7 +192,7 @@ class _EventPageState extends State<Eventpage> {
                                         onPressed: () async {
                                           String website = 'htt p://' +
                                               widget
-                                                  .event.LienDInscription.first;
+                                                  .event.lienDInscription.first;
                                           if (await canLaunch(website)) {
                                             await launch(website);
                                           } else {
@@ -203,12 +203,12 @@ class _EventPageState extends State<Eventpage> {
                                       ),
 
                                     //telephone/email/website
-                                    widget.event.LienDInscription.length > 1
+                                    widget.event.lienDInscription.length > 1
                                         ? Container(
-                                            child: widget.event.LienDInscription[
+                                            child: widget.event.lienDInscription[
                                                             1] !=
                                                         null &&
-                                                    widget.event.LienDInscription[
+                                                    widget.event.lienDInscription[
                                                             1] !=
                                                         'null'
                                                 ? Container(
@@ -218,7 +218,7 @@ class _EventPageState extends State<Eventpage> {
                                                               .center,
                                                       children: [
                                                         if (widget.event
-                                                            .LienDInscription[1]
+                                                            .lienDInscription[1]
                                                             .contains(RegExp(
                                                                 r'[0-9]')))
                                                           RaisedButton(
@@ -226,7 +226,7 @@ class _EventPageState extends State<Eventpage> {
                                                                 () async {
                                                               String tel = 'tel:' +
                                                                   widget.event
-                                                                      .LienDInscription[1];
+                                                                      .lienDInscription[1];
                                                               if (await canLaunch(
                                                                   tel)) {
                                                                 await launch(
@@ -239,14 +239,14 @@ class _EventPageState extends State<Eventpage> {
                                                                 Icons.call),
                                                           )
                                                         else if (widget.event
-                                                            .LienDInscription[1]
+                                                            .lienDInscription[1]
                                                             .contains('@'))
                                                           RaisedButton(
                                                             onPressed:
                                                                 () async {
                                                               String email = 'mailto:' +
                                                                   widget.event
-                                                                      .LienDInscription[1] +
+                                                                      .lienDInscription[1] +
                                                                   '?subject=Event inscription&body=';
                                                               if (await canLaunch(
                                                                   email)) {
@@ -267,7 +267,7 @@ class _EventPageState extends State<Eventpage> {
                                                                   'http://' +
                                                                       widget
                                                                           .event
-                                                                          .LienDInscription[1];
+                                                                          .lienDInscription[1];
                                                               if (await canLaunch(
                                                                   website)) {
                                                                 await launch(
@@ -287,12 +287,12 @@ class _EventPageState extends State<Eventpage> {
                                         : SizedBox.shrink(),
 
                                     //telephone/email/website
-                                    widget.event.LienDInscription.length > 2
+                                    widget.event.lienDInscription.length > 2
                                         ? Container(
-                                            child: widget.event.LienDInscription[
+                                            child: widget.event.lienDInscription[
                                                             2] !=
                                                         null &&
-                                                    widget.event.LienDInscription[
+                                                    widget.event.lienDInscription[
                                                             2] !=
                                                         'null'
                                                 ? Container(
@@ -302,7 +302,7 @@ class _EventPageState extends State<Eventpage> {
                                                               .center,
                                                       children: [
                                                         if (widget.event
-                                                            .LienDInscription[2]
+                                                            .lienDInscription[2]
                                                             .contains(RegExp(
                                                                 r'[0-9]')))
                                                           RaisedButton(
@@ -310,7 +310,7 @@ class _EventPageState extends State<Eventpage> {
                                                                 () async {
                                                               String tel = 'tel:' +
                                                                   widget.event
-                                                                      .LienDInscription[1];
+                                                                      .lienDInscription[1];
                                                               if (await canLaunch(
                                                                   tel)) {
                                                                 await launch(
@@ -323,14 +323,14 @@ class _EventPageState extends State<Eventpage> {
                                                                 Icons.call),
                                                           )
                                                         else if (widget.event
-                                                            .LienDInscription[2]
+                                                            .lienDInscription[2]
                                                             .contains('@'))
                                                           RaisedButton(
                                                             onPressed:
                                                                 () async {
                                                               String email = 'mailto:' +
                                                                   widget.event
-                                                                      .LienDInscription[2] +
+                                                                      .lienDInscription[2] +
                                                                   '?subject=Event inscription&body=';
                                                               if (await canLaunch(
                                                                   email)) {
@@ -351,7 +351,7 @@ class _EventPageState extends State<Eventpage> {
                                                                   'http://' +
                                                                       widget
                                                                           .event
-                                                                          .LienDInscription[2];
+                                                                          .lienDInscription[2];
                                                               if (await canLaunch(
                                                                   website)) {
                                                                 await launch(
