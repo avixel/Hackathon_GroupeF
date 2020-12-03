@@ -96,8 +96,10 @@ class _EventPageState extends State<Eventpage> {
             child: widget.event.image != null
                 ? Row(children: [
                     Expanded(
-                        child: Image.network(widget.event.image,
-                            fit: BoxFit.contain))
+                        child:
+                        widget.event.image != null
+                            ? Image.network(widget.event.image, fit: BoxFit.cover)
+                            : Text(""))
                   ])
                 : SizedBox.shrink(),
           ),

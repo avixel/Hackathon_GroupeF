@@ -56,20 +56,52 @@ class Event {
 
   final List geolocalisation;
 
-  Event(
-      {this.titre,
-      this.description,
-      this.image,
-      this.typeDAnimation,
-      this.horaireDetaile,
-      this.nomDuLieu,
-      this.ville,
-      this.descriptionLongue,
-      this.horaire,
-      this.nombreEvenements,
-      this.geolocalisation,
-      this.LienDInscription,
-      });
+  Map<String, dynamic> customToJson() => {
+        'titre': titre,
+        'description': description,
+        'image': image,
+        'typeDAnimation': typeDAnimation,
+        'horaireDetaile': horaireDetaile,
+        'horaire': horaire,
+        'nomDuLieu': nomDuLieu,
+        'ville': ville,
+        'descriptionLongue': descriptionLongue,
+        'nombreEvenements': nombreEvenements,
+        'LienDInscription': LienDInscription,
+        'geolocalisation': geolocalisation,
+      };
+
+  Event({
+    this.titre,
+    this.description,
+    this.image,
+    this.typeDAnimation,
+    this.horaireDetaile,
+    this.nomDuLieu,
+    this.ville,
+    this.descriptionLongue,
+    this.horaire,
+    this.nombreEvenements,
+    this.geolocalisation,
+    this.LienDInscription,
+  });
+
+  factory Event.customFromJson(Map<String, dynamic> json) {
+    return new Event(
+      titre: json['titre'].toString(),
+      description: json['description'].toString(),
+      image: json['image'].toString(),
+      typeDAnimation: json['typeDAnimation'].toString(),
+      horaireDetaile: json['horaireDetaile'].toString(),
+      horaire: json['horaire'].toString(),
+      nomDuLieu: json['nomDuLieu'].toString(),
+      ville: json['ville'].toString(),
+      descriptionLongue: json['descriptionLongue'].toString(),
+      nombreEvenements: json['nombreEvenements'].toString(),
+      geolocalisation: json['geolocalisation'],
+      LienDInscription: json['LienDInscription'].toString().split(','),
+    );
+  }
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return new Event(
@@ -84,7 +116,8 @@ class Event {
       descriptionLongue: json['fields']['description_longue_fr'].toString(),
       nombreEvenements: json['fields']['nb_evenements'].toString(),
       geolocalisation: json['fields']['geolocalisation'],
-      LienDInscription: json['fields']['lien_d_inscription'].toString().split(','),
+      LienDInscription:
+          json['fields']['lien_d_inscription'].toString().split(','),
     );
   }
 }

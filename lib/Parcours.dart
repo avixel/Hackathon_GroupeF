@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon_groupe_f/DataBase.dart';
-
+import 'dart:math';
 import 'Service.dart';
 import 'jsonHandler.dart';
 
@@ -15,7 +15,6 @@ class ParcoursPage extends StatefulWidget {
 
 class _ParcoursPageState extends State<ParcoursPage> {
   TextEditingController _c;
-  List<Parcours> parcoursList = [];
 
   @override
   initState() {
@@ -29,34 +28,54 @@ class _ParcoursPageState extends State<ParcoursPage> {
         title: Text("Parcours"),
       ),
       body: ListView(children: [
-        ListView.builder(
-            shrinkWrap: true,
-            itemCount: parcoursList.length,
-            itemBuilder: (BuildContext ctxt, int Index) {
-              return new Column(children: [
-                Row(children: [
-                  Text(parcoursList[Index].name),
-                  if (widget.event != null)
-                    TextButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.green),
-                      ),
-                      child: Text("ADD"),
-                      onPressed: () {
-                        parcoursList[Index].events.add(widget.event);
-                        setState(() {});
-                      },
-                    ),
-                ]),
-                ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: parcoursList[Index].events.length,
-                    itemBuilder: (BuildContext c, int i) {
-                      return new Text(
-                          parcoursList[Index].events[i].titre.substring(0, 50));
-                    })
-              ]);
+        FutureBuilder<List<Parcours>>(
+            future: getParcours(auth.currentUser.email),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Parcours>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: Text("loading"));
+              } else {
+                if (snapshot.hasError)
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                else
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.length,
+                      padding: const EdgeInsets.all(8),
+                      itemBuilder: (BuildContext context, int index) {
+                        return new Column(children: [
+                          Row(children: [
+                            Text(snapshot.data[index].name),
+                            if (widget.event != null)
+                              TextButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.green),
+                                ),
+                                child: Text("ADD"),
+                                onPressed: () async {
+                                  var v = snapshot.data[index].events;
+                                  v.add(widget.event);
+                                  await addParcours(auth.currentUser.email,
+                                          Parcours(snapshot.data[index].name, v))
+                                      .then((value) {});
+                                  setState(() {});
+                                },
+                              ),
+                          ]),
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data[index].events.length,
+                              itemBuilder: (BuildContext c, int i) {
+                                return new Text(snapshot.data[index].events[i].titre);
+                                //return new Text(snapshot
+                                //  .data[index].events[i].titre
+                                //.substring(0, min(50,snapshot.data[index].events[i].titre.length)));
+                              })
+                        ]);
+                      });
+              }
             }),
         Container(
           height: 40,
@@ -76,11 +95,12 @@ class _ParcoursPageState extends State<ParcoursPage> {
                           ),
                           new FlatButton(
                             child: new Text("Save"),
-                            onPressed: () {
-                              setState(() {
-                                parcoursList.add(Parcours(_c.text, []));
+                            onPressed: () async {
+                              await addParcours(auth.currentUser.email,
+                                  Parcours(_c.text, [])).then((value) {
+                                Navigator.pop(context);
+                                setState(() {});
                               });
-                              Navigator.pop(context);
                             },
                           )
                         ],
@@ -102,8 +122,24 @@ class Parcours {
 
   Parcours(this.name, this.events);
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'events': events,
-      };
+  Map toJson() {
+    List<Map> events = this.events != null
+        ? this.events.map((i) => i.customToJson()).toList()
+        : null;
+
+    return {
+      'name': name,
+      'events': events,
+    };
+  }
+
+  factory Parcours.fromJson(Map<String, dynamic> json) {
+    var events = json['events'];
+    List<Event> t = [];
+    for (var e in events) {
+      Event newE = Event.customFromJson(e);
+      t.add(newE);
+    }
+    return new Parcours(json['name'].toString(), t);
+  }
 }

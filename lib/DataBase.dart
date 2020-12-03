@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'dart:convert';
 import 'Parcours.dart';
 
 final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -8,13 +8,14 @@ final CollectionReference ratings = db.collection('Ratings');
 final CollectionReference orgas = db.collection('OrganisateurEvent');
 final CollectionReference remplissage = db.collection('Remplissage');
 final CollectionReference parcours = db.collection('Parcours');
+final CollectionReference sharedParcours = db.collection('SharedParcours');
 
 Stream<QuerySnapshot> getRatings() {
   return ratings.snapshots();
 }
 
 Future<double> getRating(user, event) async {
-  var usersRef = ratings.doc(user + "-" + event.substring(0,10));
+  var usersRef = ratings.doc(user + "-" + event.substring(0, 10));
 
   double res = 0;
 
@@ -27,14 +28,14 @@ Future<double> getRating(user, event) async {
 }
 
 Future<void> addRating(user, score, event) async {
-  var usersRef = ratings.doc(user + "-" + event.substring(0,10));
+  var usersRef = ratings.doc(user + "-" + event.substring(0, 10));
 
   await usersRef.get().then((docSnapshot) {
     if (docSnapshot.exists) {
       usersRef.update({'score': score});
     } else {
       return usersRef
-          .set({'user': user, 'score': score, "event": event.substring(0,10)})
+          .set({'user': user, 'score': score, "event": event.substring(0, 10)})
           .then((value) => print("rating uploaded"))
           .catchError((error) => print("Error while uploading " + error));
     }
@@ -45,7 +46,7 @@ Future<double> getAverageScore(event) async {
   double total = 0;
   double count = 0;
   await ratings.get().then((value) => value.docs.forEach((element) {
-        if (element.data()["event"] == event.substring(0,10)) {
+        if (element.data()["event"] == event.substring(0, 10)) {
           total += element.data()["score"];
           count = count + 1;
         }
@@ -56,9 +57,8 @@ Future<double> getAverageScore(event) async {
   return (total / count);
 }
 
-
 Future<double> getRemplissage(String event) async {
-  var temp = remplissage.doc(event.substring(0,10));
+  var temp = remplissage.doc(event.substring(0, 10));
 
   double res = 0;
 
@@ -71,7 +71,7 @@ Future<double> getRemplissage(String event) async {
 }
 
 Future<bool> addRemplissage(remp, event) async {
-  var temp = remplissage.doc(event.substring(0,10));
+  var temp = remplissage.doc(event.substring(0, 10));
 
   await temp.get().then((docSnapshot) {
     if (docSnapshot.exists) {
@@ -86,40 +86,46 @@ Future<bool> addRemplissage(remp, event) async {
   return true;
 }
 
-
-Future<double> getParcours(String user) async {
+Future<List<Parcours>> getParcours(String user) async {
   var temp = parcours.doc(user);
 
-  double res = 0;
+  List<Parcours> res = [];
+  Map<String, dynamic> map;
 
   await temp.get().then((docSnapshot) {
     if (docSnapshot.exists) {
-      res = double.parse(docSnapshot.get("remplissage"));
+      map = docSnapshot.data();
     }
   });
+  if (map != null) {
+    for (var v in map.values) {
+      var j = json.decode(v);
+      Parcours p = Parcours.fromJson(j);
+      res.add(p);
+    }
+  }
   return res;
 }
 
-Future<bool> addParcours(user,Parcours parc) async {
-  var temp = parcours.doc(user+"-"+parc.name);
+Future<bool> addParcours(user, Parcours parc) async {
+  var temp = parcours.doc(user);
 
   await temp.get().then((docSnapshot) {
     if (docSnapshot.exists) {
-      return temp.update({'parcours': parc.toJson()});
+      return temp.update({parc.name: jsonEncode(parc.toJson())});
     } else {
       return temp
-          .set({'parcours': parc.toJson()})
+          .set({parc.name: jsonEncode(parc.toJson())})
           .then((value) => print("parcours uploaded"))
-          .catchError((error) => print("Error while uploading " + error.toString()));
+          .catchError(
+              (error) => print("Error while uploading " + error.toString()));
     }
   });
   return true;
 }
 
-
-
 Future<bool> isOrganistaeur(event, user) async {
-  var temp = orgas.doc(event.substring(0,10));
+  var temp = orgas.doc(event.substring(0, 10));
 
   bool res = false;
 
