@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hackathon_groupe_f/DataBase.dart';
 import 'package:hackathon_groupe_f/SharedParcours.dart';
 import 'package:pdf/pdf.dart';
+import 'EventPage.dart';
 import 'Service.dart';
 import 'jsonHandler.dart';
 
@@ -80,7 +81,8 @@ class _ParcoursPageState extends State<ParcoursPage> {
               ),
             )),
       ]),
-      body: ListView(children: [
+      body:
+          ListView(scrollDirection: Axis.vertical, shrinkWrap: true, children: [
         FutureBuilder<List<Parcours>>(
             future: getParcours(auth.currentUser.email),
             builder:
@@ -91,85 +93,160 @@ class _ParcoursPageState extends State<ParcoursPage> {
                 if (snapshot.hasError)
                   return Center(child: Text('Error: ${snapshot.error}'));
                 else
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: snapshot.data.length,
-                      padding: const EdgeInsets.all(8),
-                      itemBuilder: (BuildContext context, int index) {
-                        return new Column(children: [
-                          Row(children: [
-                            Text(snapshot.data[index].name),
-                            if (widget.event != null)
-                              TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.green),
-                                ),
-                                child: Text("ADD"),
-                                onPressed: () async {
-                                  var v = snapshot.data[index].events;
-                                  v.add(widget.event);
-                                  await addParcours(
-                                          auth.currentUser.email,
-                                          Parcours(
-                                              snapshot.data[index].name, v))
-                                      .then((value) {});
-
-                                  setState(() {});
-                                },
-                              ),
-                            TextButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.green),
-                              ),
-                              child: Text("SHARE"),
-                              onPressed: () async {
-                                var v = snapshot.data[index].events;
-                                await addSharedParcours(auth.currentUser.email,
-                                        Parcours(snapshot.data[index].name, v))
-                                    .then((value) {});
-                                setState(() {});
-                              },
-                            ),
-                            TextButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.green),
-                              ),
-                              child: Text("PDF"),
-                              onPressed: () {
-                                var v = snapshot.data[index].events;
-                                createPDF(
-                                    Parcours(snapshot.data[index].name, v));
-                                setState(() {});
-                              },
-                            ),
-                          ]),
-                          ListView.builder(
+                  return Container(
+                      height: 565.0,
+                      child: Scrollbar(
+                          child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: snapshot.data[index].events.length,
-                              itemBuilder: (BuildContext c, int i) {
-                                return new Text(
-                                    snapshot.data[index].events[i].titre);
-                              })
-                        ]);
-                      });
+                              itemCount: snapshot.data.length,
+                              padding: const EdgeInsets.all(8),
+                              itemBuilder: (BuildContext context, int index) {
+                                return new ListView(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    children: [
+                                      Container(
+                                          child: Container(
+                                              margin: const EdgeInsets.fromLTRB(
+                                                  5, 5, 5, 5),
+                                              padding:
+                                                  const EdgeInsets.all(3.0),
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color:
+                                                          Colors.blueAccent)),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text("Parcours : " +
+                                                        snapshot
+                                                            .data[index].name),
+                                                    Container(
+                                                        child: Row(children: [
+                                                      if (widget.event != null)
+                                                        TextButton(
+                                                          child: Text("ADD"),
+                                                          onPressed: () async {
+                                                            var v = snapshot
+                                                                .data[index]
+                                                                .events;
+                                                            v.add(widget.event);
+                                                            await addParcours(
+                                                                    auth.currentUser
+                                                                        .email,
+                                                                    Parcours(
+                                                                        snapshot
+                                                                            .data[
+                                                                                index]
+                                                                            .name,
+                                                                        v))
+                                                                .then(
+                                                                    (value) {});
+
+                                                            setState(() {});
+                                                          },
+                                                        ),
+                                                      TextButton(
+                                                        child: Text("SHARE"),
+                                                        onPressed: () async {
+                                                          var v = snapshot
+                                                              .data[index]
+                                                              .events;
+                                                          await addSharedParcours(
+                                                                  auth.currentUser
+                                                                      .email,
+                                                                  Parcours(
+                                                                      snapshot
+                                                                          .data[
+                                                                              index]
+                                                                          .name,
+                                                                      v))
+                                                              .then((value) {});
+                                                          setState(() {});
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text("PDF"),
+                                                        onPressed: () {
+                                                          var v = snapshot
+                                                              .data[index]
+                                                              .events;
+                                                          createPDF(Parcours(
+                                                              snapshot
+                                                                  .data[index]
+                                                                  .name,
+                                                              v));
+                                                          setState(() {});
+                                                        },
+                                                      )
+                                                    ])),
+                                                  ]))),
+                                      Container(
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: snapshot
+                                                  .data[index].events.length,
+                                              itemBuilder:
+                                                  (BuildContext c, int i) {
+                                                return new Container(
+                                                    margin: const EdgeInsets
+                                                            .fromLTRB(
+                                                        15.0, 5, 15, 5),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            3.0),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors
+                                                                .blueAccent)),
+                                                    child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Expanded(
+                                                              child: Text(
+                                                                  snapshot
+                                                                      .data[
+                                                                          index]
+                                                                      .events[i]
+                                                                      .titre)),
+                                                          IconButton(
+                                                            icon: Icon(Icons
+                                                                .arrow_forward),
+                                                            onPressed: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) => Eventpage(
+                                                                      event: snapshot
+                                                                          .data[
+                                                                              index]
+                                                                          .events[i]),
+                                                                ),
+                                                              );
+                                                            },
+                                                          )
+                                                        ]));
+                                              }))
+                                    ]);
+                              })));
               }
             }),
         Container(
           height: 40,
-          color: Colors.deepOrange,
+          color: Colors.grey,
           child: Center(
             child: TextButton(
               child: Text("Add parcours"),
               onPressed: () {
                 showDialog(
                     child: new Dialog(
+                      shape:  RoundedRectangleBorder(),
                       child: new Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           new TextField(
                             decoration:

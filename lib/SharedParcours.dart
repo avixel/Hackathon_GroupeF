@@ -21,10 +21,10 @@ class _SharedParcoursPageState extends State<SharedParcoursPage> {
     return Scaffold(
       appBar: AppBar(title: Text("Shared Parcours")),
       body: ListView(children: [
-        FutureBuilder<List<Parcours>>(
+        FutureBuilder<List<Pair>>(
             future: getSharedParcours(),
             builder:
-                (BuildContext context, AsyncSnapshot<List<Parcours>> snapshot) {
+                (BuildContext context, AsyncSnapshot<List<Pair>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               } else {
@@ -37,21 +37,41 @@ class _SharedParcoursPageState extends State<SharedParcoursPage> {
                       padding: const EdgeInsets.all(8),
                       itemBuilder: (BuildContext context, int index) {
                         return new Column(children: [
-                          Row(children: [
-                            Text(snapshot.data[index].name),
-                          ]),
+                          Container(
+                              margin: const EdgeInsets.fromLTRB(5.0, 5, 5, 5),
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.blueAccent)),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Parcours : " +
+                                        snapshot.data[index].left.name),
+                                    Text("From " + snapshot.data[index].right)
+                                  ])),
                           ListView.builder(
                               shrinkWrap: true,
-                              itemCount: snapshot.data[index].events.length,
+                              itemCount:
+                                  snapshot.data[index].left.events.length,
                               itemBuilder: (BuildContext c, int i) {
-                                return new Text(
-                                    snapshot.data[index].events[i].titre);
+                                return new Container(
+                                    margin: const EdgeInsets.fromLTRB(
+                                        15.0, 5, 15, 5),
+                                    padding: const EdgeInsets.all(3.0),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.blueAccent)),
+                                    child: Row(children: [
+                                      Expanded(
+                                          child: Text(snapshot.data[index].left
+                                              .events[i].titre))
+                                    ]));
                               })
                         ]);
                       });
               }
             }),
-      
       ]),
     );
   }
