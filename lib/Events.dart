@@ -231,7 +231,7 @@ Card buildCard(context, Event event) {
           maxWidth: 64,
           maxHeight: 64,
         ),
-        child: event.image != null
+        child: ((event.image != null) && event.image.isNotEmpty && event.image!="null")
             ? Image.network(event.image, fit: BoxFit.cover)
             : Text(""),
       ),

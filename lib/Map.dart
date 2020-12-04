@@ -138,7 +138,7 @@ class _MapState extends State<Map> {
                         width: 70,
                         height: 70,
                         child: ClipOval(
-                          child: getEventById().image != null
+                          child: ((getEventById().image != null)&&getEventById().image.isNotEmpty && getEventById().image!="null")
                               ? Image.network(getEventById().image,
                                   fit: BoxFit.cover)
                               : Text(""),

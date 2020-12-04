@@ -97,7 +97,7 @@ class _EventPageState extends State<Eventpage> {
                 ? Row(children: [
                     Expanded(
                         child:
-                        widget.event.image != null
+                ((widget.event.image.isNotEmpty)&&(widget.event.image!="null"))
                             ? Image.network(widget.event.image, fit: BoxFit.cover)
                             : Text(""))
                   ])
@@ -388,7 +388,7 @@ class _EventPageState extends State<Eventpage> {
                     builder:
                         (BuildContext context, AsyncSnapshot<double> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: Text("loading"));
+                        return Center(child: CircularProgressIndicator());
                       } else {
                         if (snapshot.hasError)
                           return Center(
@@ -418,7 +418,7 @@ class _EventPageState extends State<Eventpage> {
                   builder:
                       (BuildContext context, AsyncSnapshot<double> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Text("loading"));
+                      return Center(child: CircularProgressIndicator());
                     } else {
                       if (snapshot.hasError)
                         return Center(child: Text('Error: ${snapshot.error}'));
@@ -442,7 +442,7 @@ class _EventPageState extends State<Eventpage> {
                   builder:
                       (BuildContext context, AsyncSnapshot<double> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Text("loading"));
+                      return Center(child: CircularProgressIndicator());
                     } else {
                       if (snapshot.hasError)
                         return Center(child: Text('Error: ${snapshot.error}'));
@@ -469,7 +469,7 @@ class _EventPageState extends State<Eventpage> {
         future: isOrganistaeur(widget.event.titre, auth.currentUser.email),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: Text("loading"));
+            return Center(child: CircularProgressIndicator());
           } else {
             if (snapshot.hasError)
               return Center(child: Text('Error: ${snapshot.error}'));

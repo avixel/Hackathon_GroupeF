@@ -4,6 +4,13 @@ import 'package:hackathon_groupe_f/SharedParcours.dart';
 import 'Service.dart';
 import 'jsonHandler.dart';
 
+import 'package:path_provider/path_provider.dart';
+
+import 'dart:io';
+import 'package:open_file/open_file.dart';
+
+import 'package:pdf/widgets.dart' as pw;
+
 class ParcoursPage extends StatefulWidget {
   final Event event;
 
@@ -20,6 +27,27 @@ class _ParcoursPageState extends State<ParcoursPage> {
   initState() {
     super.initState();
     _c = new TextEditingController();
+  }
+  Future<void> createPDF() async {
+    print("allo");
+    final doc = pw.Document();
+
+    doc.addPage(
+      pw.Page(
+        build: (pw.Context context) => pw.Center(
+          child: pw.Text('Hello World!'),
+        ),
+      ),
+    );
+
+
+    Directory appDocDirectory = await getApplicationDocumentsDirectory();
+
+    final file = File(appDocDirectory.path+"/pdf.pdf");
+
+    file.writeAsBytesSync(doc.save());
+
+    OpenFile.open(file.path);
   }
 
   Widget build(BuildContext context) {
@@ -49,7 +77,7 @@ class _ParcoursPageState extends State<ParcoursPage> {
             builder:
                 (BuildContext context, AsyncSnapshot<List<Parcours>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: Text("loading"));
+                return Center(child: CircularProgressIndicator());
               } else {
                 if (snapshot.hasError)
                   return Center(child: Text('Error: ${snapshot.error}'));
@@ -93,6 +121,17 @@ class _ParcoursPageState extends State<ParcoursPage> {
                                 await addSharedParcours(auth.currentUser.email,
                                         Parcours(snapshot.data[index].name, v))
                                     .then((value) {});
+                                setState(() {});
+                              },
+                            ),TextButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    Colors.green),
+                              ),
+                              child: Text("PDF"),
+                              onPressed: () {
+                                createPDF();
                                 setState(() {});
                               },
                             ),
@@ -145,6 +184,8 @@ class _ParcoursPageState extends State<ParcoursPage> {
       ]),
     );
   }
+
+
 }
 
 class Parcours {

@@ -26,7 +26,7 @@ class _SharedParcoursPageState extends State<SharedParcoursPage> {
             builder:
                 (BuildContext context, AsyncSnapshot<List<Parcours>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: Text("loading"));
+                return Center(child: CircularProgressIndicator());
               } else {
                 if (snapshot.hasError)
                   return Center(child: Text('Error: ${snapshot.error}'));
