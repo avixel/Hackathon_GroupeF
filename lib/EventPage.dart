@@ -190,9 +190,7 @@ class _EventPageState extends State<Eventpage> {
                                     else
                                       RaisedButton(
                                         onPressed: () async {
-                                          String website = 'htt p://' +
-                                              widget
-                                                  .event.lienDInscription.first;
+                                          String website='http:'+widget.event.lienDInscription.first.substring(7);
                                           if (await canLaunch(website)) {
                                             await launch(website);
                                           } else {
@@ -263,13 +261,8 @@ class _EventPageState extends State<Eventpage> {
                                                           RaisedButton(
                                                             onPressed:
                                                                 () async {
-                                                              String website =
-                                                                  'http://' +
-                                                                      widget
-                                                                          .event
-                                                                          .lienDInscription[1];
-                                                              if (await canLaunch(
-                                                                  website)) {
+                                                              String website='http:'+widget.event.lienDInscription[1].substring(7);
+                                                              if (await canLaunch(website)) {
                                                                 await launch(
                                                                     website);
                                                               } else {
@@ -310,7 +303,7 @@ class _EventPageState extends State<Eventpage> {
                                                                 () async {
                                                               String tel = 'tel:' +
                                                                   widget.event
-                                                                      .lienDInscription[1];
+                                                                      .lienDInscription[2];
                                                               if (await canLaunch(
                                                                   tel)) {
                                                                 await launch(
@@ -347,13 +340,8 @@ class _EventPageState extends State<Eventpage> {
                                                           RaisedButton(
                                                             onPressed:
                                                                 () async {
-                                                              String website =
-                                                                  'http://' +
-                                                                      widget
-                                                                          .event
-                                                                          .lienDInscription[2];
-                                                              if (await canLaunch(
-                                                                  website)) {
+                                                              String website='http:'+widget.event.lienDInscription[2].substring(7);
+                                                              if (await canLaunch(website)) {
                                                                 await launch(
                                                                     website);
                                                               } else {
