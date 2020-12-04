@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon_groupe_f/EventPage.dart';
 import 'package:location/location.dart';
+<<<<<<< HEAD
+=======
+import 'jsonHandler.dart';
+>>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 
@@ -17,8 +21,7 @@ class Map extends StatefulWidget {
   _MapState createState() => _MapState();
 }
 
-class _MapState extends State<Map>{
-
+class _MapState extends State<Map> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Event> events;
 
@@ -33,6 +36,7 @@ class _MapState extends State<Map>{
 
   double infoPos = -100;
 
+<<<<<<< HEAD
   @override
   void initState() {
     //_manager = _initClusterManager();
@@ -55,25 +59,36 @@ class _MapState extends State<Map>{
   }
 
   void setEventList() async{
+=======
+  void setEventList() async {
+>>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
     List<Event> res;
     res = (await loadEvents()).events;
     setState(() {
       events = res;
       updateMarkers();
     });
-}
+  }
 
   void updateMarkers() {
     setState(() {
       int id = 0;
+<<<<<<< HEAD
       for(Event e in events){
         try{
+=======
+      for (Event e in events) {
+        //log((e.geolocalisation.elementAt(0) as double).toString());
+        try {
+>>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
           int tid = id;
           /*_markers.add(
             Marker(
                 markerId: MarkerId(id.toString()),
-                position: LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0),
+                position: LatLng((e.geolocalisation[0] as double) + 0.0,
+                    (e.geolocalisation[1] as double) + 0.0),
                 icon: BitmapDescriptor.defaultMarker,
+<<<<<<< HEAD
                 onTap: (){
                   _onMarkerTapped(tid);
                 }
@@ -88,12 +103,19 @@ class _MapState extends State<Map>{
           id++;
           log(id.toString());
         } catch(NoSuchMethodError){log("Error adding");}
+=======
+                onTap: () {
+                  _onMarkerTapped(tid); // remplacer par l'id dans le for
+                }),
+          );
+          id++;
+        } catch (NoSuchMethodError) {}
+>>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
       }
     });
   }
 
-  void _onMapCreated (GoogleMapController _cntlr) async
-  {
+  void _onMapCreated(GoogleMapController _cntlr) async {
     _controller = _cntlr;
 
     setEventList();
@@ -104,26 +126,43 @@ class _MapState extends State<Map>{
     LocationData loc = (await _location.getLocation());
     _controller.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(loc.latitude, loc.longitude),zoom: 10),
+        CameraPosition(target: LatLng(loc.latitude, loc.longitude), zoom: 10),
       ),
     );
-
   }
 
   void _onMarkerTapped(int id) {
+<<<<<<< HEAD
       setState(() {
         log("tap!");
         _selMarker = _markers.elementAt(id);
         infoPos = 0;
       });
+=======
+    setState(() {
+      _selMarker = _markers.elementAt(id);
+      infoPos = 0;
+    });
+>>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
   }
 
-  Event getEventById(){
-      if(_selMarker == null){
-        return Event(titre:"", description:"", image:"", typeDAnimation:"", horaireDetaile:"",nomDuLieu:"", ville:"",
-            descriptionLongue:"", horaire:"", nombreEvenements:"", geolocalisation:[]);
-      } else return events.elementAt(int.parse(_selMarker.markerId.value));
-    }
+  Event getEventById() {
+    if (_selMarker == null) {
+      return Event(
+          titre: "",
+          description: "",
+          image: "",
+          typeDAnimation: "",
+          horaireDetaile: "",
+          nomDuLieu: "",
+          ville: "",
+          descriptionLongue: "",
+          horaire: "",
+          nombreEvenements: "",
+          geolocalisation: []);
+    } else
+      return events.elementAt(int.parse(_selMarker.markerId.value));
+  }
 
   Future<Marker> Function(Cluster<int>) get _markerBuilder =>
           (cluster) async {
@@ -179,6 +218,7 @@ class _MapState extends State<Map>{
       appBar: AppBar(
         title: Text("Map"),
       ),
+<<<<<<< HEAD
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -199,6 +239,26 @@ class _MapState extends State<Map>{
           ),
           AnimatedPositioned(
             bottom: infoPos, right: 0, left: 0,
+=======
+      body: Stack(children: <Widget>[
+        GoogleMap(
+          initialCameraPosition: CameraPosition(target: _initialcameraposition),
+          mapType: MapType.normal,
+          markers: _markers,
+          onMapCreated: _onMapCreated,
+          myLocationEnabled: true,
+          onTap: (LatLng latLng) {
+            setState(() {
+              _selMarker = null;
+              infoPos = -100;
+            });
+          },
+        ),
+        AnimatedPositioned(
+            bottom: infoPos,
+            right: 0,
+            left: 0,
+>>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
             duration: Duration(milliseconds: 400),
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -214,57 +274,66 @@ class _MapState extends State<Map>{
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(left:15),
-                      width: 70, height: 70,
-                      child: ClipOval(
-                        child:
-                            Image.network(getEventById().image, fit: BoxFit.cover)
-                      )
-                    ),
-                    Expanded(
-                      child: Container(
                         margin: EdgeInsets.only(left: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(getEventById().titre),
-                          ],
-                        ),
-                      )
-                    ),
-                    getEventById().LienDInscription != null && getEventById().LienDInscription.first != 'null'
-                        && getEventById().LienDInscription.first.contains(RegExp(r'[0-9]'))? Padding(
-                      padding: EdgeInsets.all(15),
-                      child: IconButton(
-                        onPressed: () async {
-                          String tel = 'tel:'+getEventById().LienDInscription.first;
-                          if (await canLaunch(tel)) {await launch(tel);} else {throw 'Could not call $tel';}
-                        },
-                        icon: Icon(Icons.call),
-                      )
-                    ) : Padding(padding: EdgeInsets.all(15)),
+                        width: 70,
+                        height: 70,
+                        child: ClipOval(
+                          child: ((getEventById().image != null)&&getEventById().image.isNotEmpty && getEventById().image!="null")
+                              ? Image.network(getEventById().image,
+                                  fit: BoxFit.cover)
+                              : Text(""),
+                        )),
+                    Expanded(
+                        child: Container(
+                      margin: EdgeInsets.only(left: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(getEventById().titre),
+                        ],
+                      ),
+                    )),
+                    getEventById().lienDInscription != null &&
+                            getEventById().lienDInscription.first != 'null' &&
+                            getEventById()
+                                .lienDInscription
+                                .first
+                                .contains(RegExp(r'[0-9]'))
+                        ? Padding(
+                            padding: EdgeInsets.all(15),
+                            child: IconButton(
+                              onPressed: () async {
+                                String tel = 'tel:' +
+                                    getEventById().lienDInscription.first;
+                                if (await canLaunch(tel)) {
+                                  await launch(tel);
+                                } else {
+                                  throw 'Could not call $tel';
+                                }
+                              },
+                              icon: Icon(Icons.call),
+                            ))
+                        : Padding(padding: EdgeInsets.all(15)),
                     Padding(
                         padding: EdgeInsets.all(15),
                         child: IconButton(
                           icon: Icon(Icons.star),
-                          onPressed: (){
+                          onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Eventpage(event: getEventById()),
+                                builder: (context) =>
+                                    Eventpage(event: getEventById()),
                               ),
                             );
                           },
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
-            )
-          )
-        ]
-      ),
+            ))
+      ]),
     );
   }
 }

@@ -1,23 +1,171 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'Parcours.dart';
 
 final FirebaseFirestore db = FirebaseFirestore.instance;
 
 final CollectionReference ratings = db.collection('Ratings');
+final CollectionReference orgas = db.collection('OrganisateurEvent');
+final CollectionReference remplissage = db.collection('Remplissage');
+final CollectionReference parcours = db.collection('Parcours');
+final CollectionReference sharedParcours = db.collection('SharedParcours');
 
 Stream<QuerySnapshot> getRatings() {
   return ratings.snapshots();
 }
 
-Future<void> addRating(user, score, event) {
-  return ratings
-      .add({'user': user, 'score': score, "event": event})
-      .then((value) => print("rating uploaded"))
-      .catchError((error) => print("Error while uploading " + error));
+Future<double> getRating(user, event) async {
+  var usersRef = ratings.doc(user + "-" + event.substring(0, 10));
+
+  double res = 0;
+
+  await usersRef.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      res = docSnapshot.get("score");
+    }
+  });
+  return res;
 }
 
-double getAverageScore() {
-  double counter = 0;
-  getRatings()
-      .listen((data) => data.docs.forEach((doc) => counter += (doc["score"])));
-  return counter;
+Future<void> addRating(user, score, event) async {
+  var usersRef = ratings.doc(user + "-" + event.substring(0, 10));
+
+  await usersRef.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      usersRef.update({'score': score});
+    } else {
+      return usersRef
+          .set({'user': user, 'score': score, "event": event.substring(0, 10)})
+          .then((value) => print("rating uploaded"))
+          .catchError((error) => print("Error while uploading " + error));
+    }
+  });
+}
+
+Future<double> getAverageScore(event) async {
+  double total = 0;
+  double count = 0;
+  await ratings.get().then((value) => value.docs.forEach((element) {
+        if (element.data()["event"] == event.substring(0, 10)) {
+          total += element.data()["score"];
+          count = count + 1;
+        }
+      }));
+  if (count == 0) {
+    return 0;
+  }
+  return (total / count);
+}
+
+Future<double> getRemplissage(String event) async {
+  var temp = remplissage.doc(event.substring(0, 10));
+
+  double res = 0;
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      res = double.parse(docSnapshot.get("remplissage"));
+    }
+  });
+  return res;
+}
+
+Future<bool> addRemplissage(remp, event) async {
+  var temp = remplissage.doc(event.substring(0, 10));
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      return temp.update({'remplissage': remp});
+    } else {
+      return temp
+          .set({'remplissage': remp})
+          .then((value) => print("remplissage uploaded"))
+          .catchError((error) => print("Error while uploading " + error));
+    }
+  });
+  return true;
+}
+
+Future<List<Parcours>> getParcours(String user) async {
+  var temp = parcours.doc(user);
+
+  List<Parcours> res = [];
+  Map<String, dynamic> map;
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      map = docSnapshot.data();
+    }
+  });
+  if (map != null) {
+    for (var v in map.values) {
+      var j = json.decode(v);
+      Parcours p = Parcours.fromJson(j);
+      res.add(p);
+    }
+  }
+  return res;
+}
+
+Future<bool> addParcours(user, Parcours parc) async {
+  var temp = parcours.doc(user);
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      return temp.update({parc.name: jsonEncode(parc.toJson())});
+    } else {
+      return temp
+          .set({parc.name: jsonEncode(parc.toJson())})
+          .then((value) => print("parcours uploaded"))
+          .catchError(
+              (error) => print("Error while uploading " + error.toString()));
+    }
+  });
+  return true;
+}
+
+Future<List<Parcours>> getSharedParcours() async {
+  List<Parcours> res = [];
+  Map<String, dynamic> map;
+
+  await sharedParcours.get().then((value) => value.docs.forEach((element) {
+        map = element.data();
+        if (map != null) {
+          for (var v in map.values) {
+            var j = json.decode(v);
+            Parcours p = Parcours.fromJson(j);
+            res.add(p);
+          }
+        }
+      }));
+  return res;
+}
+
+Future<bool> addSharedParcours(user, Parcours parc) async {
+  var temp = sharedParcours.doc(user);
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      return temp.update({parc.name: jsonEncode(parc.toJson())});
+    } else {
+      return temp
+          .set({parc.name: jsonEncode(parc.toJson())})
+          .then((value) => print("parcours uploaded"))
+          .catchError(
+              (error) => print("Error while uploading " + error.toString()));
+    }
+  });
+  return true;
+}
+
+Future<bool> isOrganistaeur(event, user) async {
+  var temp = orgas.doc(event.substring(0, 10));
+
+  bool res = false;
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      res = (docSnapshot.get("orgas").contains(user));
+    }
+  });
+  return res;
 }

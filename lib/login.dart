@@ -4,6 +4,7 @@ import 'package:hackathon_groupe_f/register.dart';
 import 'Events.dart';
 import 'Service.dart';
 import 'constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -88,20 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildForgotPasswordBtn() {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: FlatButton(
-        onPressed: () => print('Forgot Password Button Pressed'),
-        padding: EdgeInsets.only(right: 0.0),
-        child: Text(
-          'Forgot Password?',
-          style: kLabelStyle,
-        ),
-      ),
-    );
-  }
-
   Widget _buildRememberMeCheckbox() {
     return Container(
       height: 20.0,
@@ -136,8 +123,13 @@ class _LoginScreenState extends State<LoginScreen> {
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () {
-          login(controllerEmail.text, controllerPassword.text).then((value) {
+          login(controllerEmail.text, controllerPassword.text)
+              .then((value) async {
             if (value) {
+              if (_rememberMe) {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('email', controllerEmail.text);
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -251,7 +243,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 30.0,
                       ),
                       _buildPasswordTF(),
-                      _buildForgotPasswordBtn(),
                       _buildRememberMeCheckbox(),
                       _buildLoginBtn(),
                       _buildSignupBtn(),
