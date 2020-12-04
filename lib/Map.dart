@@ -1,9 +1,15 @@
+import 'dart:developer';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon_groupe_f/EventPage.dart';
 import 'package:location/location.dart';
 import 'jsonHandler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
+
+import 'jsonHandler.dart';
 
 class Map extends StatefulWidget {
   Map({Key key}) : super(key: key);
@@ -22,8 +28,31 @@ class _MapState extends State<Map> {
 
   Set<Marker> _markers = Set();
   Marker _selMarker;
+  ClusterManager _manager;
+  List<ClusterItem<int>> items = List<ClusterItem<int>>();
 
   double infoPos = -100;
+
+  @override
+  void initState() {
+    //_manager = _initClusterManager();
+    super.initState();
+  }
+
+  ClusterManager _initClusterManager() {
+    if(items!=null) log(items.length.toString());
+    return ClusterManager<int>(items, _updateMarkers,
+        markerBuilder: _markerBuilder,
+        initialZoom: 10,
+        stopClusteringZoom: 15.0);
+  }
+
+  void _updateMarkers(Set<Marker> markers) {
+    print('Updated ${markers.length} markers');
+    setState(() {
+      this._markers = markers;
+    });
+  }
 
   void setEventList() async {
     List<Event> res;
@@ -41,25 +70,26 @@ class _MapState extends State<Map> {
         //log((e.geolocalisation.elementAt(0) as double).toString());
         try {
           int tid = id;
-          _markers.add(
-            Marker(
-                markerId: MarkerId(id.toString()),
-                position: LatLng((e.geolocalisation[0] as double) + 0.0,
-                    (e.geolocalisation[1] as double) + 0.0),
-                icon: BitmapDescriptor.defaultMarker,
-                onTap: () {
-                  _onMarkerTapped(tid); // remplacer par l'id dans le for
-                }),
+          items.add(
+            ClusterItem(
+                LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0),
+                item: tid
+            ),
           );
           id++;
-        } catch (NoSuchMethodError) {}
+          //log(id.toString());
+        } catch(NoSuchMethodError){log("Error adding");}
       }
     });
   }
 
   void _onMapCreated(GoogleMapController _cntlr) async {
     _controller = _cntlr;
+
     setEventList();
+
+    _manager = _initClusterManager();
+    _manager.setMapController(_cntlr);
 
     LocationData loc = (await _location.getLocation());
     _controller.animateCamera(
@@ -69,11 +99,20 @@ class _MapState extends State<Map> {
     );
   }
 
+  void _onCameraMove(CameraPosition _cmps) async {
+    _manager.onCameraMove(_cmps);
+  }
+
+  void _onCameraIdle() async {
+    _manager.updateMap();
+  }
+
   void _onMarkerTapped(int id) {
-    setState(() {
-      _selMarker = _markers.elementAt(id);
-      infoPos = 0;
-    });
+      setState(() {
+        log("tap!");
+        _selMarker = _markers.elementAt(id);
+        infoPos = 0;
+      });
   }
 
   Event getEventById() {
@@ -94,6 +133,53 @@ class _MapState extends State<Map> {
       return events.elementAt(int.parse(_selMarker.markerId.value));
   }
 
+  Future<Marker> Function(Cluster<int>) get _markerBuilder =>
+          (cluster) async {
+        return Marker(
+          markerId: MarkerId(cluster.items.first.toString()),
+          position: cluster.location,
+          onTap: () {
+            _onMarkerTapped(int.parse(cluster.items.first.toString()));
+          },
+          icon: await _getMarkerBitmap(cluster.isMultiple ? 125 : 75,
+              text: cluster.isMultiple ? cluster.count.toString() : null),
+        );
+      };
+
+  Future<BitmapDescriptor> _getMarkerBitmap(int size, {String text}) async {
+    assert(size != null);
+
+    final PictureRecorder pictureRecorder = PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint1 = Paint()..color = Colors.red;
+    final Paint paint2 = Paint()..color = Colors.white;
+
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2.0, paint1);
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2.2, paint2);
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2.8, paint1);
+
+    if (text != null) {
+      TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+      painter.text = TextSpan(
+        text: text,
+        style: TextStyle(
+            fontSize: size / 3,
+            color: Colors.white,
+            fontWeight: FontWeight.normal),
+      );
+      painter.layout();
+      painter.paint(
+        canvas,
+        Offset(size / 2 - painter.width / 2, size / 2 - painter.height / 2),
+      );
+    }
+
+    final img = await pictureRecorder.endRecording().toImage(size, size);
+    final data = await img.toByteData(format: ImageByteFormat.png);
+
+    return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,20 +187,24 @@ class _MapState extends State<Map> {
       appBar: AppBar(
         title: Text("Map"),
       ),
-      body: Stack(children: <Widget>[
-        GoogleMap(
-          initialCameraPosition: CameraPosition(target: _initialcameraposition),
-          mapType: MapType.normal,
-          markers: _markers,
-          onMapCreated: _onMapCreated,
-          myLocationEnabled: true,
-          onTap: (LatLng latLng) {
-            setState(() {
-              _selMarker = null;
-              infoPos = -100;
-            });
-          },
-        ),
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            initialCameraPosition: CameraPosition(target: _initialcameraposition),
+            mapType: MapType.normal,
+            markers: _markers,
+
+            onMapCreated: _onMapCreated,
+            onCameraMove:  _onCameraMove,
+            onCameraIdle: _onCameraIdle,
+            myLocationEnabled: true,
+            onTap: (LatLng latLng) {
+              setState(() {
+                _selMarker = null;
+                infoPos = -100;
+              });
+            },
+          ),
         AnimatedPositioned(
             bottom: infoPos,
             right: 0,
