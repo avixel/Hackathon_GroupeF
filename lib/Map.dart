@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hackathon_groupe_f/EventPage.dart';
 import 'package:location/location.dart';
-<<<<<<< HEAD
-=======
 import 'jsonHandler.dart';
->>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 
@@ -36,7 +33,6 @@ class _MapState extends State<Map> {
 
   double infoPos = -100;
 
-<<<<<<< HEAD
   @override
   void initState() {
     //_manager = _initClusterManager();
@@ -47,8 +43,8 @@ class _MapState extends State<Map> {
     if(items!=null) log(items.length.toString());
     return ClusterManager<int>(items, _updateMarkers,
         markerBuilder: _markerBuilder,
-        initialZoom: 15,
-        stopClusteringZoom: 20.0);
+        initialZoom: 10,
+        stopClusteringZoom: 15.0);
   }
 
   void _updateMarkers(Set<Marker> markers) {
@@ -58,10 +54,7 @@ class _MapState extends State<Map> {
     });
   }
 
-  void setEventList() async{
-=======
   void setEventList() async {
->>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
     List<Event> res;
     res = (await loadEvents()).events;
     setState(() {
@@ -73,27 +66,10 @@ class _MapState extends State<Map> {
   void updateMarkers() {
     setState(() {
       int id = 0;
-<<<<<<< HEAD
-      for(Event e in events){
-        try{
-=======
       for (Event e in events) {
         //log((e.geolocalisation.elementAt(0) as double).toString());
         try {
->>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
           int tid = id;
-          /*_markers.add(
-            Marker(
-                markerId: MarkerId(id.toString()),
-                position: LatLng((e.geolocalisation[0] as double) + 0.0,
-                    (e.geolocalisation[1] as double) + 0.0),
-                icon: BitmapDescriptor.defaultMarker,
-<<<<<<< HEAD
-                onTap: (){
-                  _onMarkerTapped(tid);
-                }
-            ),
-          );*/
           items.add(
             ClusterItem(
                 LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0),
@@ -101,16 +77,8 @@ class _MapState extends State<Map> {
             ),
           );
           id++;
-          log(id.toString());
+          //log(id.toString());
         } catch(NoSuchMethodError){log("Error adding");}
-=======
-                onTap: () {
-                  _onMarkerTapped(tid); // remplacer par l'id dans le for
-                }),
-          );
-          id++;
-        } catch (NoSuchMethodError) {}
->>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
       }
     });
   }
@@ -131,19 +99,20 @@ class _MapState extends State<Map> {
     );
   }
 
+  void _onCameraMove(CameraPosition _cmps) async {
+    _manager.onCameraMove(_cmps);
+  }
+
+  void _onCameraIdle() async {
+    _manager.updateMap();
+  }
+
   void _onMarkerTapped(int id) {
-<<<<<<< HEAD
       setState(() {
         log("tap!");
         _selMarker = _markers.elementAt(id);
         infoPos = 0;
       });
-=======
-    setState(() {
-      _selMarker = _markers.elementAt(id);
-      infoPos = 0;
-    });
->>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
   }
 
   Event getEventById() {
@@ -182,7 +151,7 @@ class _MapState extends State<Map> {
 
     final PictureRecorder pictureRecorder = PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
-    final Paint paint1 = Paint()..color = Colors.orange;
+    final Paint paint1 = Paint()..color = Colors.red;
     final Paint paint2 = Paint()..color = Colors.white;
 
     canvas.drawCircle(Offset(size / 2, size / 2), size / 2.0, paint1);
@@ -218,7 +187,6 @@ class _MapState extends State<Map> {
       appBar: AppBar(
         title: Text("Map"),
       ),
-<<<<<<< HEAD
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -227,8 +195,8 @@ class _MapState extends State<Map> {
             markers: _markers,
 
             onMapCreated: _onMapCreated,
-            onCameraMove:  _manager!=null ? _manager.onCameraMove : null,
-            onCameraIdle: _manager!=null ? _manager.updateMap : null,
+            onCameraMove:  _onCameraMove,
+            onCameraIdle: _onCameraIdle,
             myLocationEnabled: true,
             onTap: (LatLng latLng) {
               setState(() {
@@ -237,28 +205,10 @@ class _MapState extends State<Map> {
               });
             },
           ),
-          AnimatedPositioned(
-            bottom: infoPos, right: 0, left: 0,
-=======
-      body: Stack(children: <Widget>[
-        GoogleMap(
-          initialCameraPosition: CameraPosition(target: _initialcameraposition),
-          mapType: MapType.normal,
-          markers: _markers,
-          onMapCreated: _onMapCreated,
-          myLocationEnabled: true,
-          onTap: (LatLng latLng) {
-            setState(() {
-              _selMarker = null;
-              infoPos = -100;
-            });
-          },
-        ),
         AnimatedPositioned(
             bottom: infoPos,
             right: 0,
             left: 0,
->>>>>>> 6bd7b6cda6ec546a91151ac24ac93f01f4d059df
             duration: Duration(milliseconds: 400),
             child: Align(
               alignment: Alignment.bottomCenter,
