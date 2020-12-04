@@ -187,7 +187,7 @@ class _EventsState extends State<Events> {
                       child: FutureBuilder<EventsList>(
                         future: loadEvents(),
                         builder: (context, snapshot) {
-                          if (snapshot.hasError) print(snapshot.error);
+                          if (snapshot.hasError) Center(child: CircularProgressIndicator());
 
                           if (snapshot.hasData) {
                             if (snapshot.data == null) {

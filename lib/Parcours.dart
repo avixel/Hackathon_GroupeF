@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hackathon_groupe_f/DataBase.dart';
 import 'package:hackathon_groupe_f/SharedParcours.dart';
+import 'package:pdf/pdf.dart';
 import 'Service.dart';
 import 'jsonHandler.dart';
 
@@ -28,22 +29,31 @@ class _ParcoursPageState extends State<ParcoursPage> {
     super.initState();
     _c = new TextEditingController();
   }
-  Future<void> createPDF() async {
-    print("allo");
+
+  Future<void> createPDF(Parcours parcours) async {
     final doc = pw.Document();
+
+    List<pw.Text> eventsTitles = [];
+
+    for (Event event in parcours.events) {
+      eventsTitles.add(pw.Text(event.titre));
+    }
 
     doc.addPage(
       pw.Page(
         build: (pw.Context context) => pw.Center(
-          child: pw.Text('Hello World!'),
-        ),
+            child: pw.Column(children: [
+          pw.Text(parcours.name, style: pw.TextStyle(color: PdfColors.blue)),
+          pw.Column(
+            children: eventsTitles,
+          )
+        ])),
       ),
     );
 
-
     Directory appDocDirectory = await getApplicationDocumentsDirectory();
 
-    final file = File(appDocDirectory.path+"/pdf.pdf");
+    final file = File(appDocDirectory.path + "/pdf.pdf");
 
     file.writeAsBytesSync(doc.save());
 
@@ -56,8 +66,7 @@ class _ParcoursPageState extends State<ParcoursPage> {
         Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: ()  {
-
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -106,6 +115,7 @@ class _ParcoursPageState extends State<ParcoursPage> {
                                           Parcours(
                                               snapshot.data[index].name, v))
                                       .then((value) {});
+
                                   setState(() {});
                                 },
                               ),
@@ -123,15 +133,18 @@ class _ParcoursPageState extends State<ParcoursPage> {
                                     .then((value) {});
                                 setState(() {});
                               },
-                            ),TextButton(
+                            ),
+                            TextButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                MaterialStateProperty.all<Color>(
-                                    Colors.green),
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.green),
                               ),
                               child: Text("PDF"),
                               onPressed: () {
-                                createPDF();
+                                var v = snapshot.data[index].events;
+                                createPDF(
+                                    Parcours(snapshot.data[index].name, v));
                                 setState(() {});
                               },
                             ),
@@ -184,8 +197,6 @@ class _ParcoursPageState extends State<ParcoursPage> {
       ]),
     );
   }
-
-
 }
 
 class Parcours {
@@ -195,6 +206,9 @@ class Parcours {
   Parcours(this.name, this.events);
 
   Map toJson() {
+    final ids = this.events.map((e) => e.titre).toSet();
+    this.events.retainWhere((x) => ids.remove(x.titre));
+
     List<Map> events = this.events != null
         ? this.events.map((i) => i.customToJson()).toList()
         : null;
