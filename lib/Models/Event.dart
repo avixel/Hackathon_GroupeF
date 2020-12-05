@@ -1,44 +1,3 @@
-import 'dart:async' show Future;
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
-
-EventsList eventsListt;
-
-Future<String> _loadEventsAsset() async {
-  return await rootBundle.loadString('assets/data.json');
-}
-
-Future<EventsList> loadEvents() async {
-  if (eventsListt != null) {
-    return eventsListt;
-  }
-  String jsonEvents = await _loadEventsAsset();
-  final jsonResponse = json.decode(jsonEvents);
-  EventsList eventsList = EventsList.fromJson(jsonResponse);
-  eventsListt = eventsList;
-  return eventsList;
-}
-
-EventsList getEventsList() {
-  return eventsListt;
-}
-
-class EventsList {
-  final List<Event> events;
-
-  EventsList({
-    this.events,
-  });
-
-  factory EventsList.fromJson(List<dynamic> parsedJson) {
-    List<Event> events = new List<Event>();
-    events = parsedJson.map((i) => Event.fromJson(i)).toList();
-    return new EventsList(
-      events: events,
-    );
-  }
-}
-
 class Event {
   final String titre;
   final String description;
@@ -56,19 +15,19 @@ class Event {
   final List geolocalisation;
 
   Map<String, dynamic> customToJson() => {
-        'titre': titre,
-        'description': description,
-        'image': image,
-        'typeDAnimation': typeDAnimation,
-        'horaireDetaile': horaireDetaile,
-        'horaire': horaire,
-        'nomDuLieu': nomDuLieu,
-        'ville': ville,
-        'descriptionLongue': descriptionLongue,
-        'nombreEvenements': nombreEvenements,
-        'lienDInscription': lienDInscription,
-        'geolocalisation': geolocalisation,
-      };
+    'titre': titre,
+    'description': description,
+    'image': image,
+    'typeDAnimation': typeDAnimation,
+    'horaireDetaile': horaireDetaile,
+    'horaire': horaire,
+    'nomDuLieu': nomDuLieu,
+    'ville': ville,
+    'descriptionLongue': descriptionLongue,
+    'nombreEvenements': nombreEvenements,
+    'lienDInscription': lienDInscription,
+    'geolocalisation': geolocalisation,
+  };
 
   Event({
     this.titre,
@@ -116,7 +75,7 @@ class Event {
       nombreEvenements: json['fields']['nb_evenements'].toString(),
       geolocalisation: json['fields']['geolocalisation'],
       lienDInscription:
-          json['fields']['lien_d_inscription'].toString().split(','),
+      json['fields']['lien_d_inscription'].toString().split(','),
     );
   }
 }

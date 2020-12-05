@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Events.dart';
-import 'jsonHandler.dart';
-import 'login.dart';
+import 'Screens/events_screen.dart';
+import 'Screens/home_screen.dart';
+import 'Utilities/jsonHandler.dart';
+import 'Screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,5 +16,5 @@ void main() async {
   runApp(MaterialApp(
       title: 'Hackaton',
       debugShowCheckedModeBanner: false,
-      home: email == null ? LoginScreen() : Events()));
+      home: email == null ? LoginScreen() : HomeScreen()));
 }

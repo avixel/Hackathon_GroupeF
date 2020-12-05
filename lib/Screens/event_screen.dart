@@ -1,29 +1,28 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hackathon_groupe_f/DataBase.dart';
-import 'Parcours.dart';
-import 'Service.dart';
-import 'constants.dart';
-import 'jsonHandler.dart';
+import 'package:hackathon_groupe_f/Models/Event.dart';
+import 'package:hackathon_groupe_f/Services/database.dart';
+import 'parcours_screen.dart';
+import '../Services/service.dart';
+import '../Utilities/constants.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-class Eventpage extends StatefulWidget {
+class EventScreen extends StatefulWidget {
   final Event event;
 
-  Eventpage({Key key, @required this.event}) : super(key: key);
+  EventScreen({Key key, @required this.event}) : super(key: key);
 
   @override
-  _EventPageState createState() => _EventPageState();
+  _EventScreenState createState() => _EventScreenState();
 }
 
-class _EventPageState extends State<Eventpage> {
+class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.event.titre), actions: <Widget>[
+      appBar: AppBar(title: Text("Évènement"), actions: <Widget>[
         Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
@@ -31,18 +30,23 @@ class _EventPageState extends State<Eventpage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ParcoursPage(event: widget.event),
+                    builder: (context) => ParcoursScreen(event: widget.event),
                   ),
                 );
               },
               child: Icon(
-                Icons.add_location_sharp,
+                Icons.alt_route,
                 size: 26.0,
               ),
             )),
       ]),
       body: ListView(
         children: [
+          SizedBox(height: 10),
+          Center(
+              child: Text(widget.event.titre,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -65,7 +69,7 @@ class _EventPageState extends State<Eventpage> {
                       ? Text(
                           widget.event.horaire,
                           overflow: TextOverflow.ellipsis,
-                           style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         )
                       : SizedBox.shrink(),
                 ],
@@ -76,7 +80,7 @@ class _EventPageState extends State<Eventpage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      "Nombre d'evenements",
+                      "Nombre d'évènements",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     widget.event.nombreEvenements != null
@@ -390,7 +394,7 @@ class _EventPageState extends State<Eventpage> {
           Center(
             child: Column(
               children: [
-                Text("Your rating"),
+                Text("Votre avis :"),
                 FutureBuilder<double>(
                     future:
                         getRating(auth.currentUser.email, widget.event.titre),
@@ -401,7 +405,8 @@ class _EventPageState extends State<Eventpage> {
                       } else {
                         if (snapshot.hasError)
                           return Center(
-                              child: Text('Error: ${snapshot.error}'));
+                              child:
+                                  Center(child: CircularProgressIndicator()));
                         else
                           return SmoothStarRating(
                             rating: snapshot.data,
@@ -421,7 +426,7 @@ class _EventPageState extends State<Eventpage> {
                           );
                       }
                     }),
-                Text("Average"),
+                Text("Avis moyen :"),
                 FutureBuilder<double>(
                   future: getAverageScore(widget.event.titre),
                   builder:
@@ -430,7 +435,7 @@ class _EventPageState extends State<Eventpage> {
                       return Center(child: CircularProgressIndicator());
                     } else {
                       if (snapshot.hasError)
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                        return Center(child: CircularProgressIndicator());
                       else
                         return SmoothStarRating(
                           rating: snapshot.data,
@@ -454,10 +459,10 @@ class _EventPageState extends State<Eventpage> {
                       return Center(child: CircularProgressIndicator());
                     } else {
                       if (snapshot.hasError)
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                        return Center(child: CircularProgressIndicator());
                       else
                         return Text(
-                            "Remplissage : " + snapshot.data.toString());
+                            "Taux de remplissage : " + snapshot.data.toString());
                     }
                   },
                 ),
@@ -481,7 +486,7 @@ class _EventPageState extends State<Eventpage> {
             return Center(child: CircularProgressIndicator());
           } else {
             if (snapshot.hasError)
-              return Center(child: Text('Error: ${snapshot.error}'));
+              return Center(child: CircularProgressIndicator());
             else
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,7 +496,7 @@ class _EventPageState extends State<Eventpage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Remplissage',
+                            'Taux de remplissage',
                             style: kLabelStyle,
                           ),
                           SizedBox(height: 10.0),
@@ -511,12 +516,11 @@ class _EventPageState extends State<Eventpage> {
                               controller: controllerRemplissage,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontFamily: 'OpenSans',
                               ),
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.only(top: 14.0),
-                                hintText: 'Remplissage',
+                                hintText: 'Taux de remplissage',
                                 hintStyle: kHintTextStyle,
                               ),
                             ),

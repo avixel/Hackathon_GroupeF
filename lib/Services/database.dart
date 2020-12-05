@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hackathon_groupe_f/Models/Parcours.dart';
 import 'dart:convert';
-import 'Parcours.dart';
 
 final FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -124,6 +124,25 @@ Future<bool> addParcours(user, Parcours parc) async {
   return true;
 }
 
+Future<bool> removeFromParcours(event, user, Parcours parc) async {
+  var temp = parcours.doc(user);
+
+  await temp.get().then((docSnapshot) {
+    parc.remove(event);
+    return temp.update({parc.name: jsonEncode(parc.toJson())});
+  });
+  return true;
+}
+
+Future<bool> removeParcours(user, Parcours parc) async {
+  var temp = parcours.doc(user);
+
+  await temp.get().then((docSnapshot) {
+    return temp.update({parc.name: FieldValue.delete()});
+  });
+  return true;
+}
+
 Future<List<Pair>> getSharedParcours() async {
   List<Pair> res = [];
   Map<String, dynamic> map;
@@ -134,7 +153,7 @@ Future<List<Pair>> getSharedParcours() async {
           for (var v in map.values) {
             var j = json.decode(v);
             Parcours p = Parcours.fromJson(j);
-            Pair pair = new Pair(p,element.id);
+            Pair pair = new Pair(p, element.id);
             res.add(pair);
           }
         }

@@ -3,22 +3,22 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hackathon_groupe_f/EventPage.dart';
+import 'package:hackathon_groupe_f/Screens/event_screen.dart';
 import 'package:location/location.dart';
-import 'jsonHandler.dart';
+import '../Utilities/jsonHandler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 
-import 'jsonHandler.dart';
+import 'package:hackathon_groupe_f/Models/Event.dart';
 
-class Map extends StatefulWidget {
-  Map({Key key}) : super(key: key);
+class MapScreen extends StatefulWidget {
+  MapScreen({Key key}) : super(key: key);
 
   @override
-  _MapState createState() => _MapState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapState extends State<Map> {
+class _MapScreenState extends State<MapScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Event> events;
 
@@ -274,7 +274,7 @@ class _MapState extends State<Map> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    Eventpage(event: getEventById()),
+                                    EventScreen(event: getEventById()),
                               ),
                             );
                           },

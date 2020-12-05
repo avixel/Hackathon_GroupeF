@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hackathon_groupe_f/register.dart';
-import 'Events.dart';
-import 'Service.dart';
-import 'constants.dart';
+import 'package:hackathon_groupe_f/Screens/register_screen.dart';
+import 'events_screen.dart';
+import '../Services/service.dart';
+import '../Utilities/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.email,
                 color: Colors.white,
               ),
-              hintText: 'Enter your Email',
+              hintText: 'Entrez votre Email',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Password',
+          'Mot de passe',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: 'Enter your Password',
+              hintText: 'Entez votre mot de passe',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Text(
-            'Remember me',
+            'Se souvenir de moi',
             style: kLabelStyle,
           ),
         ],
@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Events(),
+                  builder: (context) => EventsScreen(),
                 ),
               );
             }
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         color: Colors.white,
         child: Text(
-          'LOGIN',
+          'Se connecter',
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
@@ -163,14 +163,14 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SignUpScreen(),
+          builder: (context) => RegisterScreen(),
         ),
       ),
       child: RichText(
         text: TextSpan(
           children: [
             TextSpan(
-              text: 'Don\'t have an Account? ',
+              text: 'Pas de compte ? ',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             TextSpan(
-              text: 'Sign Up',
+              text: 'S\'inscrire',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -229,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Sign In',
+                        'Se connecter',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',

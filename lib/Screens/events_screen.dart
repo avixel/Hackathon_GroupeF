@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:hackathon_groupe_f/login.dart';
+import 'package:hackathon_groupe_f/Screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Parcours.dart';
-import 'Service.dart';
-import 'jsonHandler.dart';
-import 'EventPage.dart';
-import 'Map.dart';
+import '../Services/service.dart';
+import '../Utilities/jsonHandler.dart';
+import 'event_screen.dart';
+import 'package:hackathon_groupe_f/Models/Event.dart';
 
-class Events extends StatefulWidget {
-  Events({Key key, this.title}) : super(key: key);
+class EventsScreen extends StatefulWidget {
+  EventsScreen({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _EventsState createState() => new _EventsState();
+  _EventsScreenState createState() => new _EventsScreenState();
 }
 
-class _EventsState extends State<Events> {
+class _EventsScreenState extends State<EventsScreen> {
   TextEditingController editingController = TextEditingController();
 
   String searchValueWhere = "";
@@ -31,39 +30,7 @@ class _EventsState extends State<Events> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Events"), actions: <Widget>[
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Map(),
-                    ),
-                  );
-                },
-                child: Icon(
-                  Icons.map,
-                  size: 26.0,
-                ),
-              )),
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ParcoursPage(event: null),
-                    ),
-                  );
-                },
-                child: Icon(
-                  Icons.add_location_sharp,
-                  size: 26.0,
-                ),
-              )),
+        appBar: AppBar(title: Text("Évènements"), actions: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
@@ -109,8 +76,8 @@ class _EventsState extends State<Events> {
                     onChanged: (value) {},
                     controller: editingController,
                     decoration: InputDecoration(
-                        labelText: "Search",
-                        hintText: "Search",
+                        labelText: "Recherche",
+                        hintText: "Recherche",
                         prefixIcon: Icon(Icons.search),
                         border: OutlineInputBorder(
                             borderRadius:
@@ -129,13 +96,13 @@ class _EventsState extends State<Events> {
                         child: Row(children: [
                           Icon(Icons.search),
                           TextButton(
-                              child: Text("Where"),
+                              child: Text("Où"),
                               onPressed: () {
                                 showSearch = false;
                                 showWhere = true;
                                 showWhen = false;
                                 showWhat = false;
-                                editingController.text=searchValueWhere;
+                                editingController.text = searchValueWhere;
                                 setState(() {});
                               })
                         ])),
@@ -147,13 +114,13 @@ class _EventsState extends State<Events> {
                         child: Row(children: [
                           Icon(Icons.search),
                           TextButton(
-                              child: Text("What"),
+                              child: Text("Quoi"),
                               onPressed: () {
                                 showSearch = false;
                                 showWhat = true;
                                 showWhere = false;
                                 showWhen = false;
-                                editingController.text=searchValueWhat;
+                                editingController.text = searchValueWhat;
                                 setState(() {});
                               })
                         ])),
@@ -165,13 +132,13 @@ class _EventsState extends State<Events> {
                         child: Row(children: [
                           Icon(Icons.search),
                           TextButton(
-                              child: Text("When"),
+                              child: Text("Quand"),
                               onPressed: () {
                                 showSearch = false;
                                 showWhen = true;
                                 showWhere = false;
                                 showWhat = false;
-                                editingController.text=searchValueWhen;
+                                editingController.text = searchValueWhen;
                                 setState(() {});
                               })
                         ]))
@@ -274,7 +241,7 @@ Card buildCard(context, Event event) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Eventpage(event: event),
+            builder: (context) => EventScreen(event: event),
           ),
         );
       },
