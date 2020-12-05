@@ -20,6 +20,8 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
+  TextEditingController _c = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -492,6 +494,87 @@ class _EventScreenState extends State<EventScreen> {
               ],
             ),
           ),
+          Text("Commentaires : "),
+          Container(
+            alignment: Alignment.centerLeft,
+            decoration: kBoxDecorationStyle,
+            height: 60.0,
+            child: TextField(
+              onSubmitted: (str) async {
+                await addComments(auth.currentUser.email, widget.event, _c.text)
+                    .then(
+                  (value) {
+                    _c.clear();
+                    setState(() {});
+                  },
+                );
+              },
+              controller: _c,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14.0),
+                hintText: 'Commentaire',
+                hintStyle: kHintTextStyle,
+              ),
+            ),
+          ),
+          Container(
+            height: 300,
+            child: FutureBuilder<List<Pair>>(
+              future: getComments(widget.event.titre),
+              builder: (context, snapshot) {
+                if (snapshot.hasError)
+                  Center(child: CircularProgressIndicator());
+
+                if (snapshot.hasData) {
+                  if (snapshot.data == null) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return Container(
+                      child: ListView.builder(
+                          itemCount: snapshot.data.length,
+                          padding: const EdgeInsets.all(8),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                  bottom: BorderSide(
+                                      width: 1.0, color: Colors.grey),
+                                )),
+                                child: Row(children: [
+                                  Column(children: [
+                                    Container(
+                                        child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                                snapshot.data[index].left,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12)))),
+                                    Icon(Icons.person),
+                                  ]),
+                                  Container(
+                                      child: Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  15, 5, 5, 5),
+                                              child: Text(
+                                                  snapshot.data[index].right))))
+                                ])
+                                //child: Text(snapshot.data[index].left + snapshot.data[index].right,style: TextStyle(color: Colors.red),)
+
+                                );
+                          }));
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          )
         ],
       ),
     );
@@ -527,7 +610,7 @@ class _EventScreenState extends State<EventScreen> {
                                 addRemplissage(
                                         controllerRemplissage.text, event.titre)
                                     .then((value) {
-                                  controllerRemplissage.text = "";
+                                  controllerRemplissage.clear();
                                   setState(() {});
                                 });
                               },

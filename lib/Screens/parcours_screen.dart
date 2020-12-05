@@ -130,7 +130,7 @@ class _ParcoursScreenState extends State<ParcoursScreen> {
                             controller: _c,
                           ),
                           new FlatButton(
-                            child: new Text("Save"),
+                            child: new Text("Ajouter"),
                             onPressed: () async {
                               await addParcours(auth.currentUser.email,
                                   Parcours(_c.text, [])).then((value) {

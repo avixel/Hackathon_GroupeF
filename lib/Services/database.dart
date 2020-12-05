@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hackathon_groupe_f/Models/Event.dart';
 import 'package:hackathon_groupe_f/Models/Parcours.dart';
 import 'dart:convert';
 
@@ -9,6 +10,7 @@ final CollectionReference orgas = db.collection('OrganisateurEvent');
 final CollectionReference remplissage = db.collection('Remplissage');
 final CollectionReference parcours = db.collection('Parcours');
 final CollectionReference sharedParcours = db.collection('SharedParcours');
+final CollectionReference comments = db.collection('Comments');
 
 Stream<QuerySnapshot> getRatings() {
   return ratings.snapshots();
@@ -159,6 +161,56 @@ Future<List<Pair>> getSharedParcours() async {
         }
       }));
   return res;
+}
+
+Future<List<Pair>> getComments(String event) async {
+  List<Pair> res = [];
+  Map<String, dynamic> map;
+
+  var temp = comments.doc(event.substring(0, 10));
+
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      map = docSnapshot.data();
+      if (map != null) {
+        for (var e in map.entries) {
+          for (String s in e.value) {
+            Pair pair = new Pair(e.key, s);
+            res.add(pair);
+          }
+        }
+      }
+    }
+  });
+
+  return res;
+}
+
+Future<bool> addComments(String user, Event event, String com) async {
+  var temp = comments.doc(event.titre.substring(0, 10));
+  await temp.get().then((docSnapshot) {
+    if (docSnapshot.exists) {
+      List<dynamic> l = docSnapshot.data()[user];
+
+      List<String> ll = [];
+      if (l != null) {
+        l.forEach((element) {
+          ll.add(element.toString());
+        });
+      }
+      ll.add(com);
+      return temp.set({user.toString() : ll});
+    } else {
+      return temp
+          .set({
+            user: [com]
+          })
+          .then((value) => print("comments uploaded"))
+          .catchError(
+              (error) => print("Error while uploading " + error.toString()));
+    }
+  });
+  return true;
 }
 
 Future<bool> addSharedParcours(user, Parcours parc) async {

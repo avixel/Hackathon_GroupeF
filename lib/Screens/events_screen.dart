@@ -70,7 +70,7 @@ class _EventsScreenState extends State<EventsScreen> {
                       if (showWhere) {
                         searchValueWhere = editingController.text;
                       }
-                      editingController.text = "";
+                      editingController.clear();
                       setState(() {});
                     },
                     onChanged: (value) {},
@@ -165,6 +165,7 @@ class _EventsScreenState extends State<EventsScreen> {
                                 .where((element) => test(element))
                                 .toList();
                             return ListView.builder(
+                                shrinkWrap: true,
                                 itemCount: list.length,
                                 padding: const EdgeInsets.all(8),
                                 itemBuilder: (BuildContext context, int index) {
