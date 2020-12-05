@@ -113,10 +113,10 @@ class _ParcoursScreenState extends State<ParcoursScreen> {
           child: ListView(children: [
         Container(
           height: 40,
-          color: Colors.grey,
+          color: Colors.blueGrey,
           child: Center(
             child: TextButton(
-              child: Text("Ajouter parcours"),
+              child: Text("Ajouter parcours",style: TextStyle(color: Colors.white),),
               onPressed: () {
                 showDialog(
                     child: new Dialog(

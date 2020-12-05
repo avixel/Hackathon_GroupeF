@@ -4,6 +4,7 @@ import 'package:hackathon_groupe_f/Services/database.dart';
 import 'parcours_screen.dart';
 import '../Services/service.dart';
 import '../Utilities/constants.dart';
+import 'package:share/share.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -394,6 +395,17 @@ class _EventScreenState extends State<EventScreen> {
           Center(
             child: Column(
               children: [
+                SizedBox(height: 20),
+                Text("Partager : "),
+                IconButton(
+                  icon: Icon(Icons.screen_share),
+                  onPressed: () {
+                    Share.share('Je suis intéressé par l\'évènement : ' +
+                        widget.event.titre +
+                        " !\n" +
+                        widget.event.lienDInscription.toString());
+                  },
+                ),
                 Text("Votre avis :"),
                 FutureBuilder<double>(
                     future:
@@ -451,6 +463,7 @@ class _EventScreenState extends State<EventScreen> {
                     }
                   },
                 ),
+                Text("Taux de remplissage : "),
                 FutureBuilder<double>(
                   future: getRemplissage(widget.event.titre),
                   builder:
@@ -461,8 +474,17 @@ class _EventScreenState extends State<EventScreen> {
                       if (snapshot.hasError)
                         return Center(child: CircularProgressIndicator());
                       else
-                        return Text(
-                            "Taux de remplissage : " + snapshot.data.toString());
+                        return SmoothStarRating(
+                          rating: snapshot.data,
+                          isReadOnly: true,
+                          size: 50,
+                          filledIconData: Icons.person,
+                          halfFilledIconData: Icons.person_outline,
+                          defaultIconData: Icons.person_outline,
+                          starCount: 5,
+                          allowHalfRating: true,
+                          spacing: 2.0,
+                        );
                     }
                   },
                 ),
@@ -495,10 +517,6 @@ class _EventScreenState extends State<EventScreen> {
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            'Taux de remplissage',
-                            style: kLabelStyle,
-                          ),
                           SizedBox(height: 10.0),
                           Container(
                             alignment: Alignment.centerLeft,
