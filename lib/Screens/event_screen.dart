@@ -410,8 +410,7 @@ class _EventScreenState extends State<EventScreen> {
                 ),
                 Text("Votre avis :"),
                 FutureBuilder<double>(
-                    future:
-                        getRating(auth.currentUser.email, widget.event.titre),
+                    future: getRating(auth.currentUser.email, widget.event),
                     builder:
                         (BuildContext context, AsyncSnapshot<double> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -433,8 +432,8 @@ class _EventScreenState extends State<EventScreen> {
                             allowHalfRating: true,
                             spacing: 2.0,
                             onRated: (value) async {
-                              await addRating(auth.currentUser.email, value,
-                                  widget.event.titre);
+                              await addRating(
+                                  auth.currentUser.email, value, widget.event);
                               setState(() {});
                             },
                           );
@@ -442,7 +441,7 @@ class _EventScreenState extends State<EventScreen> {
                     }),
                 Text("Avis moyen :"),
                 FutureBuilder<double>(
-                  future: getAverageScore(widget.event.titre),
+                  future: getAverageScore(widget.event),
                   builder:
                       (BuildContext context, AsyncSnapshot<double> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -467,7 +466,7 @@ class _EventScreenState extends State<EventScreen> {
                 ),
                 Text("Taux de remplissage : "),
                 FutureBuilder<double>(
-                  future: getRemplissage(widget.event.titre),
+                  future: getRemplissage(widget.event),
                   builder:
                       (BuildContext context, AsyncSnapshot<double> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -490,11 +489,14 @@ class _EventScreenState extends State<EventScreen> {
                     }
                   },
                 ),
-                orga(widget.event)
+                orga(widget.event),
+                SizedBox(
+                  height: 20,
+                )
               ],
             ),
           ),
-          Text("Commentaires : "),
+          Center(child: Text("Commentaires : ",style: TextStyle(fontWeight: FontWeight.bold),)),
           Container(
             alignment: Alignment.centerLeft,
             decoration: kBoxDecorationStyle,
@@ -516,7 +518,7 @@ class _EventScreenState extends State<EventScreen> {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.only(top: 14.0),
-                hintText: 'Commentaire',
+                hintText: '  ...',
                 hintStyle: kHintTextStyle,
               ),
             ),
@@ -524,7 +526,7 @@ class _EventScreenState extends State<EventScreen> {
           Container(
             height: 300,
             child: FutureBuilder<List<Pair>>(
-              future: getComments(widget.event.titre),
+              future: getComments(widget.event),
               builder: (context, snapshot) {
                 if (snapshot.hasError)
                   Center(child: CircularProgressIndicator());
@@ -585,7 +587,7 @@ class _EventScreenState extends State<EventScreen> {
 
   FutureBuilder<bool> orga(Event event) {
     return FutureBuilder<bool>(
-        future: isOrganistaeur(widget.event.titre, auth.currentUser.email),
+        future: isOrganistaeur(widget.event, auth.currentUser.email),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -608,7 +610,7 @@ class _EventScreenState extends State<EventScreen> {
                             child: TextField(
                               onSubmitted: (str) {
                                 addRemplissage(
-                                        controllerRemplissage.text, event.titre)
+                                        controllerRemplissage.text, event)
                                     .then((value) {
                                   controllerRemplissage.clear();
                                   setState(() {});

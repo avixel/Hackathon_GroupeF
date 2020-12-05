@@ -16,8 +16,8 @@ Stream<QuerySnapshot> getRatings() {
   return ratings.snapshots();
 }
 
-Future<double> getRating(user, event) async {
-  var usersRef = ratings.doc(user + "-" + event.substring(0, 10));
+Future<double> getRating(user, Event event) async {
+  var usersRef = ratings.doc(user + "-" + event.identifiant);
 
   double res = 0;
 
@@ -29,26 +29,26 @@ Future<double> getRating(user, event) async {
   return res;
 }
 
-Future<void> addRating(user, score, event) async {
-  var usersRef = ratings.doc(user + "-" + event.substring(0, 10));
+Future<void> addRating(user, score, Event event) async {
+  var usersRef = ratings.doc(user + "-" + event.identifiant);
 
   await usersRef.get().then((docSnapshot) {
     if (docSnapshot.exists) {
       usersRef.update({'score': score});
     } else {
       return usersRef
-          .set({'user': user, 'score': score, "event": event.substring(0, 10)})
+          .set({'user': user, 'score': score, "event": event.identifiant})
           .then((value) => print("rating uploaded"))
           .catchError((error) => print("Error while uploading " + error));
     }
   });
 }
 
-Future<double> getAverageScore(event) async {
+Future<double> getAverageScore(Event event) async {
   double total = 0;
   double count = 0;
   await ratings.get().then((value) => value.docs.forEach((element) {
-        if (element.data()["event"] == event.substring(0, 10)) {
+        if (element.data()["event"] == event.identifiant) {
           total += element.data()["score"];
           count = count + 1;
         }
@@ -59,8 +59,8 @@ Future<double> getAverageScore(event) async {
   return (total / count);
 }
 
-Future<double> getRemplissage(String event) async {
-  var temp = remplissage.doc(event.substring(0, 10));
+Future<double> getRemplissage(Event event) async {
+  var temp = remplissage.doc(event.identifiant);
 
   double res = 0;
 
@@ -72,8 +72,8 @@ Future<double> getRemplissage(String event) async {
   return res;
 }
 
-Future<bool> addRemplissage(remp, event) async {
-  var temp = remplissage.doc(event.substring(0, 10));
+Future<bool> addRemplissage(remp, Event event) async {
+  var temp = remplissage.doc(event.identifiant);
 
   await temp.get().then((docSnapshot) {
     if (docSnapshot.exists) {
@@ -126,7 +126,7 @@ Future<bool> addParcours(user, Parcours parc) async {
   return true;
 }
 
-Future<bool> removeFromParcours(event, user, Parcours parc) async {
+Future<bool> removeFromParcours(Event event, user, Parcours parc) async {
   var temp = parcours.doc(user);
 
   await temp.get().then((docSnapshot) {
@@ -163,11 +163,13 @@ Future<List<Pair>> getSharedParcours() async {
   return res;
 }
 
-Future<List<Pair>> getComments(String event) async {
+Future<List<Pair>> getComments(Event event) async {
   List<Pair> res = [];
   Map<String, dynamic> map;
 
-  var temp = comments.doc(event.substring(0, 10));
+  print('allo');
+  print(event.identifiant);
+  var temp = comments.doc(event.identifiant);
 
   await temp.get().then((docSnapshot) {
     if (docSnapshot.exists) {
@@ -187,7 +189,7 @@ Future<List<Pair>> getComments(String event) async {
 }
 
 Future<bool> addComments(String user, Event event, String com) async {
-  var temp = comments.doc(event.titre.substring(0, 10));
+  var temp = comments.doc(event.identifiant);
   await temp.get().then((docSnapshot) {
     if (docSnapshot.exists) {
       List<dynamic> l = docSnapshot.data()[user];
@@ -199,7 +201,7 @@ Future<bool> addComments(String user, Event event, String com) async {
         });
       }
       ll.add(com);
-      return temp.set({user.toString() : ll});
+      return temp.set({user.toString(): ll});
     } else {
       return temp
           .set({
@@ -229,8 +231,8 @@ Future<bool> addSharedParcours(user, Parcours parc) async {
   return true;
 }
 
-Future<bool> isOrganistaeur(event, user) async {
-  var temp = orgas.doc(event.substring(0, 10));
+Future<bool> isOrganistaeur(Event event, user) async {
+  var temp = orgas.doc(event.identifiant);
 
   bool res = false;
 
