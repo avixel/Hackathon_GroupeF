@@ -25,7 +25,3 @@ Future<bool> register(email, password) async {
 void signOut() async {
   await auth.signOut();
 }
-
-Stream<User> get user {
-  return auth.authStateChanges();
-}

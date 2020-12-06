@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hackathon_groupe_f/Service.dart';
-import 'Events.dart';
-import 'constants.dart';
+import 'package:hackathon_groupe_f/Services/service.dart';
+import 'events_screen.dart';
+import '../Utilities/constants.dart';
 
-class SignUpScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final controllerEmail = TextEditingController();
   final controllerPassword = TextEditingController();
 
@@ -40,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Icons.email,
                 color: Colors.white,
               ),
-              hintText: 'Enter your Email',
+              hintText: 'Entrez votre email',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -54,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Password',
+          'Mot de passe',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -76,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: 'Enter your Password',
+              hintText: 'Entrez votre mot de passe',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -97,7 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Events(),
+                  builder: (context) => EventsScreen(),
                 ),
               );
             }
@@ -109,7 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         color: Colors.white,
         child: Text(
-          'SIGN UP',
+          'S\'INSCRIRE',
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
@@ -160,7 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Sign Up',
+                        'S\'inscrire',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
