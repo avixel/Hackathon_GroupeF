@@ -301,7 +301,7 @@ class _MapScreenState extends State<MapScreen> {
                         Padding(
                             padding: EdgeInsets.all(15),
                             child: IconButton(
-                              icon: Icon(Icons.star),
+                              icon: Icon(Icons.arrow_forward, color: Colors.green),
                               onPressed: () {
                                 Navigator.push(
                                   context,

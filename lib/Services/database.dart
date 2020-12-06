@@ -166,9 +166,6 @@ Future<List<Pair>> getSharedParcours() async {
 Future<List<Pair>> getComments(Event event) async {
   List<Pair> res = [];
   Map<String, dynamic> map;
-
-  print('allo');
-  print(event.identifiant);
   var temp = comments.doc(event.identifiant);
 
   await temp.get().then((docSnapshot) {
