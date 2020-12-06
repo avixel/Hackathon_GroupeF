@@ -19,7 +19,6 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<Event> events;
 
@@ -41,11 +40,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   ClusterManager _initClusterManager() {
-    if(items!=null) log(items.length.toString());
+    if (items != null) log(items.length.toString());
     return ClusterManager<int>(items, _updateMarkers,
-        markerBuilder: _markerBuilder,
-        initialZoom: 10,
-        stopClusteringZoom: 11);
+        markerBuilder: _markerBuilder, initialZoom: 10, stopClusteringZoom: 11);
   }
 
   void _updateMarkers(Set<Marker> markers) {
@@ -71,30 +68,32 @@ class _MapScreenState extends State<MapScreen> {
         //log((e.geolocalisation.elementAt(0) as double).toString());
         try {
           int tid = id;
-          if(!verifLatLng(LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0))){
+          if (!verifLatLng(LatLng((e.geolocalisation[0] as double) + 0.0,
+              (e.geolocalisation[1] as double) + 0.0))) {
             items.add(
               ClusterItem(
-                  LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0),
-                  item: tid
-              ),
+                  LatLng((e.geolocalisation[0] as double) + 0.0,
+                      (e.geolocalisation[1] as double) + 0.0),
+                  item: tid),
             );
           }
           //log(id.toString());
-        } catch(NoSuchMethodError){log("Error adding");}
+        } catch (NoSuchMethodError) {
+          log("Error adding");
+        }
         id++;
       }
     });
   }
 
-  bool verifLatLng(LatLng ll){
-    for(ClusterItem ci in items){
-      if(ci.location == ll) return true;
+  bool verifLatLng(LatLng ll) {
+    for (ClusterItem ci in items) {
+      if (ci.location == ll) return true;
     }
     return false;
   }
 
   void _onMapCreated(GoogleMapController _cntlr) async {
-
     _controller = _cntlr;
 
     setEventList();
@@ -126,17 +125,19 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Marker findMarkerById(LatLng ll){
-    for(Marker m in _markers){
-      if(m.position == ll) return m;
+  Marker findMarkerById(LatLng ll) {
+    for (Marker m in _markers) {
+      if (m.position == ll) return m;
     }
     return null;
   }
 
-  void _onClusterTapped(LatLng pos) async{
+  void _onClusterTapped(LatLng pos) async {
     _controller.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(pos.latitude, pos.longitude), zoom: (await _controller.getZoomLevel()+1)),
+        CameraPosition(
+            target: LatLng(pos.latitude, pos.longitude),
+            zoom: (await _controller.getZoomLevel() + 1)),
       ),
     );
   }
@@ -160,15 +161,14 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  Future<Marker> Function(Cluster<int>) get _markerBuilder =>
-          (cluster) async {
+  Future<Marker> Function(Cluster<int>) get _markerBuilder => (cluster) async {
         return Marker(
           markerId: MarkerId(cluster.items.first.toString()),
           position: cluster.location,
           onTap: () {
-            if(cluster.isMultiple){
+            if (cluster.isMultiple) {
               _onClusterTapped(cluster.location);
-            } else{
+            } else {
               _onMarkerTapped(cluster.markers.first);
             }
           },
@@ -219,71 +219,72 @@ class _MapScreenState extends State<MapScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Carte"),
+        automaticallyImplyLeading: false,
       ),
-      body: Stack(
-          children: <Widget>[
-            GoogleMap(
-              initialCameraPosition: CameraPosition(target: _initialcameraposition),
-              mapType: MapType.normal,
-              markers: _markers,
-
-              onMapCreated: _onMapCreated,
-              onCameraMove:  _onCameraMove,
-              onCameraIdle: _onCameraIdle,
-              myLocationEnabled: true,
-              onTap: (LatLng latLng) {
-                setState(() {
-                  _selMarker = null;
-                  infoPos = -100;
-                });
-              },
-            ),
-            AnimatedPositioned(
-                bottom: infoPos,
-                right: 0,
-                left: 0,
-                duration: Duration(milliseconds: 400),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            margin: EdgeInsets.only(left: 15),
-                            width: 70,
-                            height: 70,
-                            child: ClipOval(
-                              child: ((getEventById().image != null)&&getEventById().image.isNotEmpty && getEventById().image!="null")
-                                  ? Image.network(getEventById().image,
+      body: Stack(children: <Widget>[
+        GoogleMap(
+          initialCameraPosition: CameraPosition(target: _initialcameraposition),
+          mapType: MapType.normal,
+          markers: _markers,
+          onMapCreated: _onMapCreated,
+          onCameraMove: _onCameraMove,
+          onCameraIdle: _onCameraIdle,
+          myLocationEnabled: true,
+          onTap: (LatLng latLng) {
+            setState(() {
+              _selMarker = null;
+              infoPos = -100;
+            });
+          },
+        ),
+        AnimatedPositioned(
+            bottom: infoPos,
+            right: 0,
+            left: 0,
+            duration: Duration(milliseconds: 400),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                margin: EdgeInsets.all(10),
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.only(left: 15),
+                        width: 70,
+                        height: 70,
+                        child: ClipOval(
+                          child: ((getEventById().image != null) &&
+                                  getEventById().image.isNotEmpty &&
+                                  getEventById().image != "null")
+                              ? Image.network(getEventById().image,
                                   fit: BoxFit.cover)
-                                  : Text(""),
-                            )),
-                        Expanded(
-                            child: Container(
-                              margin: EdgeInsets.only(left: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(getEventById().titre),
-                                ],
-                              ),
-                            )),
-                        getEventById().lienDInscription != null &&
+                              : Text(""),
+                        )),
+                    Expanded(
+                        child: Container(
+                      margin: EdgeInsets.only(left: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(getEventById().titre),
+                        ],
+                      ),
+                    )),
+                    getEventById().lienDInscription != null &&
                             getEventById().lienDInscription.first != 'null' &&
                             getEventById()
                                 .lienDInscription
                                 .first
                                 .contains(RegExp(r'[0-9]'))
-                            ? Padding(
+                        ? Padding(
                             padding: EdgeInsets.all(15),
                             child: IconButton(
                               onPressed: () async {
@@ -297,26 +298,26 @@ class _MapScreenState extends State<MapScreen> {
                               },
                               icon: Icon(Icons.call),
                             ))
-                            : Padding(padding: EdgeInsets.all(15)),
-                        Padding(
-                            padding: EdgeInsets.all(15),
-                            child: IconButton(
-                              icon: Icon(Icons.arrow_forward, color: Colors.green),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        EventScreen(event: getEventById()),
-                                  ),
-                                );
-                              },
-                            )),
-                      ],
-                    ),
-                  ),
-                ))
-          ]),
+                        : Padding(padding: EdgeInsets.all(15)),
+                    Padding(
+                        padding: EdgeInsets.all(15),
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_forward, color: Colors.green),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EventScreen(event: getEventById()),
+                              ),
+                            );
+                          },
+                        )),
+                  ],
+                ),
+              ),
+            ))
+      ]),
     );
   }
 }
