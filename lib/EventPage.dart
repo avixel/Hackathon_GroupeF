@@ -46,7 +46,8 @@ class _EventPageState extends State<Eventpage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Column(
+              Flexible(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
@@ -54,6 +55,7 @@ class _EventPageState extends State<Eventpage> {
                     child: widget.event.typeDAnimation != null
                         ? Text(
                             widget.event.typeDAnimation,
+                            overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.start,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )
@@ -62,11 +64,12 @@ class _EventPageState extends State<Eventpage> {
                   widget.event.horaire != null
                       ? Text(
                           widget.event.horaire,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                           style: TextStyle(fontWeight: FontWeight.bold),
                         )
                       : SizedBox.shrink(),
                 ],
-              ),
+              )),
               Padding(
                 padding: const EdgeInsets.only(left: 0, top: 8, bottom: 8),
                 child: Column(
@@ -96,9 +99,10 @@ class _EventPageState extends State<Eventpage> {
             child: widget.event.image != null
                 ? Row(children: [
                     Expanded(
-                        child:
-                ((widget.event.image.isNotEmpty)&&(widget.event.image!="null"))
-                            ? Image.network(widget.event.image, fit: BoxFit.cover)
+                        child: ((widget.event.image.isNotEmpty) &&
+                                (widget.event.image != "null"))
+                            ? Image.network(widget.event.image,
+                                fit: BoxFit.cover)
                             : Text(""))
                   ])
                 : SizedBox.shrink(),
@@ -190,7 +194,10 @@ class _EventPageState extends State<Eventpage> {
                                     else
                                       RaisedButton(
                                         onPressed: () async {
-                                          String website='http:'+widget.event.lienDInscription.first.substring(7);
+                                          String website = 'http:' +
+                                              widget
+                                                  .event.lienDInscription.first
+                                                  .substring(7);
                                           if (await canLaunch(website)) {
                                             await launch(website);
                                           } else {
@@ -261,8 +268,15 @@ class _EventPageState extends State<Eventpage> {
                                                           RaisedButton(
                                                             onPressed:
                                                                 () async {
-                                                              String website='http:'+widget.event.lienDInscription[1].substring(7);
-                                                              if (await canLaunch(website)) {
+                                                              String website = 'http:' +
+                                                                  widget
+                                                                      .event
+                                                                      .lienDInscription[
+                                                                          1]
+                                                                      .substring(
+                                                                          7);
+                                                              if (await canLaunch(
+                                                                  website)) {
                                                                 await launch(
                                                                     website);
                                                               } else {
@@ -340,8 +354,15 @@ class _EventPageState extends State<Eventpage> {
                                                           RaisedButton(
                                                             onPressed:
                                                                 () async {
-                                                              String website='http:'+widget.event.lienDInscription[2].substring(7);
-                                                              if (await canLaunch(website)) {
+                                                              String website = 'http:' +
+                                                                  widget
+                                                                      .event
+                                                                      .lienDInscription[
+                                                                          2]
+                                                                      .substring(
+                                                                          7);
+                                                              if (await canLaunch(
+                                                                  website)) {
                                                                 await launch(
                                                                     website);
                                                               } else {
@@ -479,6 +500,14 @@ class _EventPageState extends State<Eventpage> {
                             decoration: kBoxDecorationStyle,
                             height: 60.0,
                             child: TextField(
+                              onSubmitted: (str) {
+                                addRemplissage(
+                                        controllerRemplissage.text, event.titre)
+                                    .then((value) {
+                                  controllerRemplissage.text = "";
+                                  setState(() {});
+                                });
+                              },
                               controller: controllerRemplissage,
                               style: TextStyle(
                                 color: Colors.white,
@@ -492,15 +521,6 @@ class _EventPageState extends State<Eventpage> {
                               ),
                             ),
                           ),
-                          TextButton(
-                              child: Text("GO"),
-                              onPressed: () {
-                                addRemplissage(
-                                        controllerRemplissage.text, event.titre)
-                                    .then((value) {
-                                  setState(() {});
-                                });
-                              }),
                         ])
                 ],
               );

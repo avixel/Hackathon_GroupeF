@@ -91,6 +91,7 @@ class _EventsState extends State<Events> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    autofocus: true,
                     onSubmitted: (String value) {
                       showSearch = true;
                       if (showWhat) {
@@ -102,20 +103,10 @@ class _EventsState extends State<Events> {
                       if (showWhere) {
                         searchValueWhere = editingController.text;
                       }
+                      editingController.text = "";
                       setState(() {});
                     },
-                    onChanged: (value) {
-                      if (showWhat) {
-                        searchValueWhat = editingController.text;
-                      }
-                      if (showWhen) {
-                        searchValueWhen = editingController.text;
-                      }
-                      if (showWhere) {
-                        searchValueWhere = editingController.text;
-                      }
-                      setState(() {});
-                    },
+                    onChanged: (value) {},
                     controller: editingController,
                     decoration: InputDecoration(
                         labelText: "Search",
@@ -142,6 +133,9 @@ class _EventsState extends State<Events> {
                               onPressed: () {
                                 showSearch = false;
                                 showWhere = true;
+                                showWhen = false;
+                                showWhat = false;
+                                editingController.text=searchValueWhere;
                                 setState(() {});
                               })
                         ])),
@@ -157,6 +151,9 @@ class _EventsState extends State<Events> {
                               onPressed: () {
                                 showSearch = false;
                                 showWhat = true;
+                                showWhere = false;
+                                showWhen = false;
+                                editingController.text=searchValueWhat;
                                 setState(() {});
                               })
                         ])),
@@ -172,6 +169,9 @@ class _EventsState extends State<Events> {
                               onPressed: () {
                                 showSearch = false;
                                 showWhen = true;
+                                showWhere = false;
+                                showWhat = false;
+                                editingController.text=searchValueWhen;
                                 setState(() {});
                               })
                         ]))
@@ -187,18 +187,15 @@ class _EventsState extends State<Events> {
                       child: FutureBuilder<EventsList>(
                         future: loadEvents(),
                         builder: (context, snapshot) {
-                          if (snapshot.hasError) print(snapshot.error);
+                          if (snapshot.hasError)
+                            Center(child: CircularProgressIndicator());
 
                           if (snapshot.hasData) {
                             if (snapshot.data == null) {
                               return Center(child: CircularProgressIndicator());
                             }
                             var list = snapshot.data.events
-                                .where((element) =>
-                                    element.titre.contains(searchValueWhat) &&
-                                    element.horaire.contains(searchValueWhen) &&
-                                    element.nomDuLieu
-                                        .contains(searchValueWhere))
+                                .where((element) => test(element))
                                 .toList();
                             return ListView.builder(
                                 itemCount: list.length,
@@ -219,6 +216,18 @@ class _EventsState extends State<Events> {
                   ]))
             ]));
   }
+
+  bool test(element) {
+    var temp = (element.titre.contains(searchValueWhat) ||
+            element.description.contains(searchValueWhat) ||
+            element.descriptionLongue.contains(searchValueWhat)) &&
+        (element.horaire.contains(searchValueWhen) ||
+            element.horaireDetaile.contains(searchValueWhen)) &&
+        (element.nomDuLieu.contains(searchValueWhere) ||
+            element.ville.contains(searchValueWhere));
+
+    return temp;
+  }
 }
 
 Card buildCard(context, Event event) {
@@ -231,7 +240,9 @@ Card buildCard(context, Event event) {
           maxWidth: 64,
           maxHeight: 64,
         ),
-        child: ((event.image != null) && event.image.isNotEmpty && event.image!="null")
+        child: ((event.image != null) &&
+                event.image.isNotEmpty &&
+                event.image != "null")
             ? Image.network(event.image, fit: BoxFit.cover)
             : Text(""),
       ),

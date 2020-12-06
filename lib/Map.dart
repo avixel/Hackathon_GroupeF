@@ -44,7 +44,7 @@ class _MapState extends State<Map> {
     return ClusterManager<int>(items, _updateMarkers,
         markerBuilder: _markerBuilder,
         initialZoom: 10,
-        stopClusteringZoom: 15.0);
+        stopClusteringZoom: 11);
   }
 
   void _updateMarkers(Set<Marker> markers) {
@@ -70,17 +70,26 @@ class _MapState extends State<Map> {
         //log((e.geolocalisation.elementAt(0) as double).toString());
         try {
           int tid = id;
-          items.add(
-            ClusterItem(
-                LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0),
-                item: tid
-            ),
-          );
-          id++;
+          if(!verifLatLng(LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0))){
+            items.add(
+              ClusterItem(
+                  LatLng((e.geolocalisation[0] as double)+0.0, (e.geolocalisation[1] as double)+0.0),
+                  item: tid
+              ),
+            );
+            id++;
+          }
           //log(id.toString());
         } catch(NoSuchMethodError){log("Error adding");}
       }
     });
+  }
+
+  bool verifLatLng(LatLng ll){
+    for(ClusterItem ci in items){
+      if(ci.location == ll) return true;
+    }
+    return false;
   }
 
   void _onMapCreated(GoogleMapController _cntlr) async {
@@ -107,12 +116,27 @@ class _MapState extends State<Map> {
     _manager.updateMap();
   }
 
-  void _onMarkerTapped(int id) {
+  void _onMarkerTapped(ClusterItem ci) {
       setState(() {
-        log("tap!");
-        _selMarker = _markers.elementAt(id);
+        log("tap marker!");
+        _selMarker = findMarkerById(ci.item);
         infoPos = 0;
       });
+  }
+  
+  Marker findMarkerById(int id){
+    for(Marker m in _markers){
+      if(m.markerId.value == id.toString()) return m;
+    }
+    return null;
+  }
+
+  void _onClusterTapped(LatLng pos) async{
+    _controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(pos.latitude, pos.longitude), zoom: (await _controller.getZoomLevel()+1)),
+        ),
+    );
   }
 
   Event getEventById() {
@@ -139,12 +163,21 @@ class _MapState extends State<Map> {
           markerId: MarkerId(cluster.items.first.toString()),
           position: cluster.location,
           onTap: () {
-            _onMarkerTapped(int.parse(cluster.items.first.toString()));
+            if(cluster.isMultiple){
+              log('---- $cluster');
+              cluster.items.forEach((p) => log(p.toString()));
+              _onClusterTapped(cluster.location);
+            } else{
+              log(cluster.toString());
+              _onMarkerTapped(cluster.markers.first);
+            }
           },
           icon: await _getMarkerBitmap(cluster.isMultiple ? 125 : 75,
               text: cluster.isMultiple ? cluster.count.toString() : null),
         );
       };
+
+  //int _getClusterPos()
 
   Future<BitmapDescriptor> _getMarkerBitmap(int size, {String text}) async {
     assert(size != null);

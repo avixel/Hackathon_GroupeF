@@ -124,8 +124,8 @@ Future<bool> addParcours(user, Parcours parc) async {
   return true;
 }
 
-Future<List<Parcours>> getSharedParcours() async {
-  List<Parcours> res = [];
+Future<List<Pair>> getSharedParcours() async {
+  List<Pair> res = [];
   Map<String, dynamic> map;
 
   await sharedParcours.get().then((value) => value.docs.forEach((element) {
@@ -134,7 +134,8 @@ Future<List<Parcours>> getSharedParcours() async {
           for (var v in map.values) {
             var j = json.decode(v);
             Parcours p = Parcours.fromJson(j);
-            res.add(p);
+            Pair pair = new Pair(p,element.id);
+            res.add(pair);
           }
         }
       }));
@@ -168,4 +169,14 @@ Future<bool> isOrganistaeur(event, user) async {
     }
   });
   return res;
+}
+
+class Pair {
+  Pair(this.left, this.right);
+
+  final dynamic left;
+  final dynamic right;
+
+  @override
+  String toString() => 'Pair[$left, $right]';
 }

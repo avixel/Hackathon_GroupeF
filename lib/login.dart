@@ -243,7 +243,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 30.0,
                       ),
                       _buildPasswordTF(),
-                      _buildRememberMeCheckbox(),
+                      Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                          child: _buildRememberMeCheckbox()),
                       _buildLoginBtn(),
                       _buildSignupBtn(),
                     ],

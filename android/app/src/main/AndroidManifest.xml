@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hackathon_groupe_f">
+
    <application
-        android:label="hackathon_groupe_f"
+
+    android:label="hackathon_groupe_f"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
