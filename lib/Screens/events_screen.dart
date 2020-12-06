@@ -30,7 +30,7 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Évènements"), actions: <Widget>[
+        appBar: AppBar(title: Text("Évènements"), automaticallyImplyLeading: false,actions: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(

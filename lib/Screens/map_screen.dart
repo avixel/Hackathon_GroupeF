@@ -186,6 +186,7 @@ class _MapScreenState extends State<MapScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Map"),
+          automaticallyImplyLeading: false
       ),
       body: Stack(
         children: <Widget>[

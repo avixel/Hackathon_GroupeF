@@ -91,24 +91,27 @@ class _ParcoursScreenState extends State<ParcoursScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Parcours"), actions: <Widget>[
-        Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SharedParcoursScreen(),
+      appBar: AppBar(
+          title: Text("Parcours"),
+          automaticallyImplyLeading: (widget.event != null),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SharedParcoursScreen(),
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    Icons.share,
+                    size: 26.0,
                   ),
-                );
-              },
-              child: Icon(
-                Icons.share,
-                size: 26.0,
-              ),
-            )),
-      ]),
+                )),
+          ]),
       body: Container(
           child: ListView(children: [
         Container(
@@ -116,7 +119,10 @@ class _ParcoursScreenState extends State<ParcoursScreen> {
           color: Colors.blueGrey,
           child: Center(
             child: TextButton(
-              child: Text("Ajouter parcours",style: TextStyle(color: Colors.white),),
+              child: Text(
+                "Ajouter parcours",
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 showDialog(
                     child: new Dialog(

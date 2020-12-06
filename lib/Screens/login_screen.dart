@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hackathon_groupe_f/Screens/home_screen.dart';
 import 'package:hackathon_groupe_f/Screens/register_screen.dart';
 import 'events_screen.dart';
 import '../Services/service.dart';
@@ -133,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EventsScreen(),
+                  builder: (context) => HomeScreen(),
                 ),
               );
             }

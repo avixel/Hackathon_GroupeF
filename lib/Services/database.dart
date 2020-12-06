@@ -201,12 +201,12 @@ Future<bool> addComments(String user, Event event, String com) async {
         });
       }
       ll.add(com);
-      return temp.set({user.toString(): ll});
+      return temp.set({user.toString(): ll}, SetOptions(merge: true));
     } else {
       return temp
           .set({
             user: [com]
-          })
+          }, SetOptions(merge: true))
           .then((value) => print("comments uploaded"))
           .catchError(
               (error) => print("Error while uploading " + error.toString()));
