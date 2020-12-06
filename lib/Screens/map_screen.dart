@@ -213,6 +213,17 @@ class _MapScreenState extends State<MapScreen> {
     return BitmapDescriptor.fromBytes(data.buffer.asUint8List());
   }
 
+  String reduceText(String text){
+    String res = "";
+    List<String> spl = text.split(" ");
+    int i = 0;
+    while(res.length < 40){
+      res += spl[i] + " ";
+      i++;
+    }
+    return res+"...";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -274,7 +285,9 @@ class _MapScreenState extends State<MapScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(getEventById().titre),
+                          Text(
+                              getEventById().titre.length > 50 ?
+                              (reduceText(getEventById().titre)) : getEventById().titre),
                         ],
                       ),
                     )),
